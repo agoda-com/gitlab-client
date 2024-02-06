@@ -36,25 +36,29 @@ jobs:
           optionalAssemblyInfo: false
           EOF
 
-          pwd
-          docker run -v $(pwd):/work -w /work ${{ env.OPENAPI_GENERATOR_IMAGE }} generate -i gitlab.yml -g csharp -c api-client-gen-config.yml -o . 
-          chmod -R 777 .
+          mkdir output
+          chmod -R 777 output
+          docker run -v $(pwd):/work -w /work ${{ env.OPENAPI_GENERATOR_IMAGE }} generate -i gitlab.yml -g csharp -c api-client-gen-config.yml -o output
+          
           ls
 
     - name: Restore
+      working-directory: output
       run: dotnet restore ${{ env.SOLUTION_FILE }}
 
     - name: Build
+      working-directory: output
       run: dotnet build ${{ env.SOLUTION_FILE }} --configuration Debug --no-restore
 
     - name: Pack
+      working-directory: output
       run: dotnet pack ${{ env.SOLUTION_FILE }} --configuration Debug -o finalpackage -p:PackageVersion=${{ env.MAJOR_MINOR_VERSION }}${{ github.run_number }}
 
     - name: Publish artifact
       uses: actions/upload-artifact@master
       with:
         name: nupkg
-        path: finalpackage
+        path: output/finalpackage
 
   deploy:
     needs: build
