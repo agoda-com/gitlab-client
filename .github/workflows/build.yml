@@ -37,10 +37,7 @@ jobs:
           EOF
 
           mkdir output
-          chmod -R 777 output
-          docker run -v $(pwd):/work -w /work ${{ env.OPENAPI_GENERATOR_IMAGE }} generate -i gitlab.yml -g csharp -c api-client-gen-config.yml -o output
-          
-          ls
+          docker run -v $(pwd):/work -w /work ${{ env.OPENAPI_GENERATOR_IMAGE }} bash -c "generate -i gitlab.yml -g csharp -c api-client-gen-config.yml -o output && chmod -R 777"
 
     - name: Restore
       working-directory: output
