@@ -37,7 +37,7 @@ jobs:
           EOF
 
           pwd
-          docker run -v $(pwd):/work -w '/work' ${{ env.OPENAPI_GENERATOR_IMAGE }} generate -i gitlab.yaml -g csharp -c api-client-gen-config.yml -o .
+          docker run -v $(pwd):/work -w /work ${{ env.OPENAPI_GENERATOR_IMAGE }} generate -i gitlab.yml -g csharp -c api-client-gen-config.yml -o .
           ls
 
     - name: Restore
