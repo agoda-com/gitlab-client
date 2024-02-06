@@ -9,10 +9,10 @@ on:
 env:
   NETCORE_VERSION: '8.0.x'  
   MAJOR_MINOR_VERSION: 1.0.
-  SOLUTION_FILE: Agoda.IoC.sln
   OPENAPI_GENERATOR_IMAGE: openapitools/openapi-generator-cli
   CSHARP_TARGET_FRAMEWORK: netstandard2.0
   CSHARP_CLIENT_NAMESPACE: Agoda.Gitlab.Client
+  SOLUTION_FILE: $CSHARP_CLIENT_NAMESPACE.sln
 
 jobs:
   build:
@@ -26,28 +26,29 @@ jobs:
       with:
         dotnet-version: ${{ env.NETCORE_VERSION }}
 
+    - name: Generate
+      run: |
+          cat << EOF > api-client-gen-config.yml
+          packageName: ${{ env.CSHARP_CLIENT_NAMESPACE }}
+          packageVersion: ${{ env.MAJOR_MINOR_VERSION }}${{ github.run_number }}
+          targetFramework: "${{ env.CSHARP_TARGET_FRAMEWORK }}"
+          netCoreProjectFile: true
+          optionalAssemblyInfo: false
+          EOF
+          alias openapi="docker run --network host -v '$(pwd):/work' -w '/work' ${{ env.OPENAPI_GENERATOR_IMAGE }}"
+          openapi generate \
+          -i "gitlab.yaml" \
+          -g csharp \
+          -c api-client-gen-config.yml \
+          -o .
+          ls
+
     - name: Restore
       run: dotnet restore ${{ env.SOLUTION_FILE }}
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1
       
-    - name: Generate
-      run: |
-        cat << EOF > api-client-gen-config.yml
-        packageName: ${{ env.CSHARP_CLIENT_NAMESPACE }}
-        packageVersion: ${{ env.MAJOR_MINOR_VERSION }}${{ github.run_number }}
-        targetFramework: "${{ env.CSHARP_TARGET_FRAMEWORK }}"
-        netCoreProjectFile: true
-        optionalAssemblyInfo: false
-        EOF
-        alias openapi="docker run --network host -v '$(pwd):/work' -w '/work' ${{ env.OPENAPI_GENERATOR_IMAGE }}"
-        openapi generate \
-        -i "gitlab.yaml" \
-        -g csharp \
-        -c api-client-gen-config.yml \
-        -o .
-        ls
 
     - name: Build
       run: dotnet build ${{ env.SOLUTION_FILE }} --configuration Debug --no-restore
