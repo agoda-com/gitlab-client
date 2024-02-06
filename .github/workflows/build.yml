@@ -36,7 +36,8 @@ jobs:
           optionalAssemblyInfo: false
           EOF
 
-          docker run --network host -v '$(pwd):/work' -w '/work' ${{ env.OPENAPI_GENERATOR_IMAGE }} generate -i "gitlab.yaml" -g csharp -c api-client-gen-config.yml -o .
+          pwd
+          docker run --network host -v '$(pwd):/work' -w '/work' ${{ env.OPENAPI_GENERATOR_IMAGE }} generate -i gitlab.yaml -g csharp -c api-client-gen-config.yml -o .
           ls
 
     - name: Restore
