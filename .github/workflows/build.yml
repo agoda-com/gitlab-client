@@ -35,6 +35,7 @@ jobs:
           netCoreProjectFile: true
           optionalAssemblyInfo: false
           EOF
+          
           alias openapi="docker run --network host -v '$(pwd):/work' -w '/work' ${{ env.OPENAPI_GENERATOR_IMAGE }}"
           openapi generate \
           -i "gitlab.yaml" \
