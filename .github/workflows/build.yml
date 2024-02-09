@@ -34,6 +34,7 @@ jobs:
           targetFramework: "${{ env.CSHARP_TARGET_FRAMEWORK }}"
           netCoreProjectFile: true
           optionalAssemblyInfo: false
+          library: generichost
           EOF
 
           mkdir output

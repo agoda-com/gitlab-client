@@ -2926,7 +2926,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Job'
+                  $ref: '#/components/schemas/API_Entities_Job'
   /projects/{id}/jobs/{job_id}:
     get:
       tags:
@@ -2952,7 +2952,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Job'
+                $ref: '#/components/schemas/API_Entities_Job'
   /projects/{id}/jobs/{job_id}/play:
     post:
       tags:
@@ -3616,8 +3616,7 @@ components:
           type: object
           properties: {}
           example: |-
-            {"enforcement_limit"=>[{"timestamp"=>1686909124, "user_id"=>1, "username"=>"x", "value"=>5}],
-                               "notification_limit"=>[{"timestamp"=>1686909124, "user_id"=>2, "username"=>"y", "value"=>7}]}
+            {"enforcement_limit"=>[{"timestamp"=>1686909124, "user_id"=>1, "username"=>"x", "value"=>5}],"notification_limit"=>[{"timestamp"=>1686909124, "user_id"=>2, "username"=>"y", "value"=>7}]}
         maven_max_file_size:
           type: integer
           format: int32
@@ -3674,7 +3673,7 @@ components:
         enterprise:
           type: boolean
       description: API_Entities_Metadata model
-    Job:
+    API_Entities_Job:
       type: object
       properties:
         id:
