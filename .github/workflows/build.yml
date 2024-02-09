@@ -12,7 +12,7 @@ env:
   OPENAPI_GENERATOR_IMAGE: openapitools/openapi-generator-cli
   CSHARP_TARGET_FRAMEWORK: netstandard2.0
   CSHARP_CLIENT_NAMESPACE: Agoda.Gitlab.Client
-  SOLUTION_FILE: Agoda.Gitlab.Client.sln
+  PROJECT_FILE: Agoda.Gitlab.Client/Agoda.Gitlab.Client.csproj
 
 jobs:
   build:
@@ -41,7 +41,7 @@ jobs:
           docker run -v $(pwd):/work -w /work ${{ env.OPENAPI_GENERATOR_IMAGE }} sh -c "docker-entrypoint.sh generate -i gitlab.yml -g csharp -c api-client-gen-config.yml -o output && chmod -R 777 ."
           cp -f workarounds/ClientUtils.cs output/src/Agoda.Gitlab.Client/Client
           rm -rf output/src/Agoda.Gitlab.Client.Test
-          
+
     - name: Archive production artifacts
       uses: actions/upload-artifact@v4
       with:
@@ -50,16 +50,16 @@ jobs:
             output
 
     - name: Restore
-      working-directory: output
-      run: dotnet restore ${{ env.SOLUTION_FILE }}
+      working-directory: output/src
+      run: dotnet restore ${{ env.PROJECT_FILE }}
 
     - name: Build
-      working-directory: output
-      run: dotnet build ${{ env.SOLUTION_FILE }} --configuration Debug --no-restore
+      working-directory: output/src
+      run: dotnet build ${{ env.PROJECT_FILE }} --configuration Debug --no-restore
 
     - name: Pack
-      working-directory: output
-      run: dotnet pack ${{ env.SOLUTION_FILE }} --configuration Debug -o finalpackage -p:PackageVersion=${{ env.MAJOR_MINOR_VERSION }}${{ github.run_number }}
+      working-directory: output/src
+      run: dotnet pack ${{ env.PROJECT_FILE }} --configuration Debug -o finalpackage -p:PackageVersion=${{ env.MAJOR_MINOR_VERSION }}${{ github.run_number }}
 
     - name: Publish artifact
       uses: actions/upload-artifact@master
