@@ -39,6 +39,8 @@ jobs:
 
           mkdir output
           docker run -v $(pwd):/work -w /work ${{ env.OPENAPI_GENERATOR_IMAGE }} sh -c "docker-entrypoint.sh generate -i gitlab.yml -g csharp -c api-client-gen-config.yml -o output && chmod -R 777 ."
+          cp -f workarounds/ClientUtils.cs output/src/Agoda.Gitlab.Client/Client
+          rm -rf output/src/Agoda.Gitlab.Client.Test
           
     - name: Archive production artifacts
       uses: actions/upload-artifact@v4
