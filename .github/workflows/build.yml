@@ -1,0 +1,94 @@
+name: .NET Core Build and Publish
+
+on:
+  push:
+    branches: master
+  pull_request:
+    branches: master
+
+env:
+  NETCORE_VERSION: '8.0.x'  
+  MAJOR_MINOR_VERSION: 1.0.
+  OPENAPI_GENERATOR_IMAGE: openapitools/openapi-generator-cli
+  CSHARP_TARGET_FRAMEWORK: netstandard2.0
+  CSHARP_CLIENT_NAMESPACE: Agoda.Gitlab.Client
+  PROJECT_FILE: Agoda.Gitlab.Client/Agoda.Gitlab.Client.csproj
+
+jobs:
+  build:
+    name: Build Package 
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core SDK ${{ env.NETCORE_VERSION }}
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.NETCORE_VERSION }}
+
+    - name: Generate
+      run: |
+          cat << EOF > api-client-gen-config.yml
+          packageName: ${{ env.CSHARP_CLIENT_NAMESPACE }}
+          packageVersion: ${{ env.MAJOR_MINOR_VERSION }}${{ github.run_number }}
+          targetFramework: "${{ env.CSHARP_TARGET_FRAMEWORK }}"
+          netCoreProjectFile: true
+          optionalAssemblyInfo: false
+          library: generichost
+          EOF
+
+          mkdir output
+          docker run -v $(pwd):/work -w /work ${{ env.OPENAPI_GENERATOR_IMAGE }} sh -c "docker-entrypoint.sh generate -i gitlab.yml -g csharp -c api-client-gen-config.yml -o output && chmod -R 777 ."
+          cp -f workarounds/ClientUtils.cs output/src/Agoda.Gitlab.Client/Client
+          rm -rf output/src/Agoda.Gitlab.Client.Test
+
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: generated-code
+        path: |
+            output
+
+    - name: Restore
+      working-directory: output/src
+      run: dotnet restore ${{ env.PROJECT_FILE }}
+
+    - name: Build
+      working-directory: output/src
+      run: dotnet build ${{ env.PROJECT_FILE }} --configuration Debug --no-restore
+
+    - name: Pack
+      working-directory: output/src
+      run: dotnet pack ${{ env.PROJECT_FILE }} --configuration Debug -o finalpackage -p:PackageVersion=${{ env.MAJOR_MINOR_VERSION }}${{ github.run_number }}
+
+    - name: Publish artifact
+      uses: actions/upload-artifact@master
+      with:
+        name: nupkg
+        path: output/finalpackage
+
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    name: Deploy Packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Package artifact
+        uses: actions/download-artifact@master
+        with:
+          name: nupkg
+          path: ./nupkg
+
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1.0.5
+        with:
+          nuget-api-key: ${{ secrets.NUGET_API_KEY }}
+          nuget-version: latest
+
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.NETCORE_VERSION }}
+
+      - name: Push to NuGet
+        run: dotnet nuget push nupkg/**/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://nuget.org --skip-duplicate
