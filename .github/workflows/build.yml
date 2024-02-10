@@ -65,7 +65,7 @@ jobs:
       uses: actions/upload-artifact@master
       with:
         name: nupkg
-        path: output/finalpackage
+        path: output/src/finalpackage
 
   deploy:
     needs: build
