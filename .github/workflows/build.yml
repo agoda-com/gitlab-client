@@ -65,11 +65,11 @@ jobs:
       uses: actions/upload-artifact@master
       with:
         name: nupkg
-        path: output/finalpackage
+        path: output/src/finalpackage
 
   deploy:
     needs: build
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/master'
     name: Deploy Packages
     runs-on: ubuntu-latest
     steps:
