@@ -1,0 +1,160 @@
+openapi: 3.0.0
+info:
+  title: GitLab Issue Metrics API
+  version: 1.0
+  description: API endpoints for managing metric images in issue tracking.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/issues/{issue_iid}/metric_images:
+    post:
+      summary: Upload a metric image to an issue
+      operationId: uploadMetricImage
+      tags:
+      - Issue Metrics
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: issue_iid
+        in: path
+        required: true
+        description: The internal ID of the issue
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+                  description: The metric image file to upload
+      responses:
+        201:
+          description: Metric image uploaded successfully
+    get:
+      summary: Get all metric images for an issue
+      operationId: getMetricImages
+      tags:
+      - Issue Metrics
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: issue_iid
+        in: path
+        required: true
+        description: The internal ID of the issue
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of metric images
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_MetricImage'
+  /api/v4/projects/{id}/issues/{issue_iid}/metric_images/{image_id}:
+    put:
+      summary: Update a metric image for an issue
+      operationId: updateMetricImage
+      tags:
+      - Issue Metrics
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: issue_iid
+        in: path
+        required: true
+        description: The internal ID of the issue
+        schema:
+          type: integer
+      - name: image_id
+        in: path
+        required: true
+        description: The ID of the metric image
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+                  description: The new metric image file
+      responses:
+        200:
+          description: Metric image updated successfully
+    delete:
+      summary: Delete a metric image from an issue
+      operationId: deleteMetricImage
+      tags:
+      - Issue Metrics
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: issue_iid
+        in: path
+        required: true
+        description: The internal ID of the issue
+        schema:
+          type: integer
+      - name: image_id
+        in: path
+        required: true
+        description: The ID of the metric image to delete
+        schema:
+          type: integer
+      responses:
+        204:
+          description: Metric image deleted successfully
+components:
+  schemas:
+    API_Entities_MetricImage:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the metric image
+        issue_iid:
+          type: integer
+          description: The internal ID of the issue
+        file_name:
+          type: string
+          description: The name of the image file
+        file_path:
+          type: string
+          description: The URL path to the image file
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the image was uploaded
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time when the image was last updated

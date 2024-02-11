@@ -1,0 +1,114 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing GitLab projects and repositories
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/repository/tags:
+    get:
+      summary: List repository tags
+      description: Get a list of repository tags from a project
+      operationId: listRepositoryTags
+      tags:
+      - Repository Tags
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: An array of repository tags
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_RepositoryTag'
+  /api/v4/projects/{id}/repository/tags/{tag_name}:
+    get:
+      summary: Get a single repository tag
+      description: Get a specific repository tag from a project
+      operationId: getSingleRepositoryTag
+      tags:
+      - Repository Tags
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: string
+      - name: tag_name
+        in: path
+        description: The name of the tag
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: A single repository tag
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_RepositoryTag'
+components:
+  schemas:
+    API_Entities_RepositoryTag:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the tag
+        commit:
+          type: object
+          properties:
+            id:
+              type: string
+              description: The commit id
+            short_id:
+              type: string
+              description: The short commit id
+            created_at:
+              type: string
+              format: date-time
+              description: The date and time of the commit
+            parent_ids:
+              type: array
+              items:
+                type: string
+            message:
+              type: string
+              description: The commit message
+            author_name:
+              type: string
+              description: The name of the author
+            author_email:
+              type: string
+              description: The email of the author
+            authored_date:
+              type: string
+              format: date-time
+            committer_name:
+              type: string
+              description: The name of the committer
+            committer_email:
+              type: string
+              description: The email of the committer
+            committed_date:
+              type: string
+              format: date-time
+        message:
+          type: string
+          description: The message of the tag
+        release:
+          type: object
+          properties:
+            description:
+              type: string
+              description: The release notes for the tag

@@ -1,0 +1,94 @@
+openapi: 3.0.0
+info:
+  title: GitLab Member Approval API
+  version: 1.0
+  description: API endpoints for approving group members in GitLab
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/groups/{id}/members/{member_id}/approve:
+    put:
+      summary: Approve a group member
+      description: Approve a pending group member by their member ID.
+      operationId: approveGroupMember
+      tags:
+      - groups
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the group
+        schema:
+          type: integer
+      - name: member_id
+        in: path
+        required: true
+        description: The ID of the member to approve
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Member approved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Member'
+      security:
+      - oauth2:
+        - write_groups
+  /api/v4/groups/{id}/members/approve_all:
+    post:
+      summary: Approve all group members
+      description: Approve all pending group members.
+      operationId: approveAllGroupMembers
+      tags:
+      - groups
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the group
+        schema:
+          type: integer
+      responses:
+        200:
+          description: All members approved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  approved:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/API_Entities_Member'
+      security:
+      - oauth2:
+        - write_groups
+components:
+  schemas:
+    API_Entities_Member:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        name:
+          type: string
+        state:
+          type: string
+        avatar_url:
+          type: string
+        web_url:
+          type: string
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://gitlab.example.com/oauth/authorize
+          tokenUrl: https://gitlab.example.com/oauth/token
+          scopes:
+            write_groups: Grants write access to group members

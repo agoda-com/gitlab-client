@@ -1,0 +1,87 @@
+openapi: 3.0.0
+info:
+  title: GitLab Token Management API
+  version: 1.0
+  description: API for managing access tokens in GitLab projects.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/access_tokens/{token_id}/rotate:
+    post:
+      summary: Rotate an access token
+      description: Rotates the specified access token for a project.
+      operationId: rotateAccessToken
+      tags:
+      - Token Management
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project.
+        schema:
+          type: integer
+      - name: token_id
+        in: path
+        required: true
+        description: The ID of the access token to rotate.
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Access token rotated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_AccessToken'
+  /api/v4/projects/{id}/access_tokens/{token_id}:
+    delete:
+      summary: Delete an access token
+      description: Deletes the specified access token for a project.
+      operationId: deleteAccessToken
+      tags:
+      - Token Management
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project.
+        schema:
+          type: integer
+      - name: token_id
+        in: path
+        required: true
+        description: The ID of the access token to delete.
+        schema:
+          type: integer
+      responses:
+        204:
+          description: Access token deleted successfully.
+components:
+  schemas:
+    API_Entities_AccessToken:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the access token.
+        token:
+          type: string
+          description: The access token string.
+        expires_at:
+          type: string
+          format: date-time
+          description: The expiration date and time of the access token.
+        scopes:
+          type: array
+          items:
+            type: string
+          description: The scopes assigned to the access token.
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the access token was created.
+        rotated_at:
+          type: string
+          format: date-time
+          description: The date and time when the access token was last rotated.

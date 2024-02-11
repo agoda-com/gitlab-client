@@ -1,0 +1,140 @@
+openapi: 3.0.0
+info:
+  title: GitLab To-Do Items API
+  version: 1.0
+  description: API for managing to-do items in GitLab
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/todos:
+    get:
+      summary: Get a list of to-do items
+      description: Returns a list of to-do items for the current user, with optional filters.
+      operationId: getTodos
+      parameters:
+      - name: action
+        in: query
+        description: Filter to-dos by action type.
+        required: false
+        schema:
+          type: string
+          enum:
+          - assigned
+          - mentioned
+          - build_failed
+          - marked
+          - approval_required
+          - unmergeable
+      - name: author_id
+        in: query
+        description: Filter to-dos by the ID of the author.
+        required: false
+        schema:
+          type: integer
+      - name: project_id
+        in: query
+        description: Filter to-dos by the ID of the project.
+        required: false
+        schema:
+          type: integer
+      - name: group_id
+        in: query
+        description: Filter to-dos by the ID of the group.
+        required: false
+        schema:
+          type: integer
+      - name: state
+        in: query
+        description: Filter to-dos by their state.
+        required: false
+        schema:
+          type: string
+          enum:
+          - pending
+          - done
+      - name: type
+        in: query
+        description: Filter to-dos by their type.
+        required: false
+        schema:
+          type: string
+          enum:
+          - Issue
+          - MergeRequest
+          - DesignManagement::Design
+          - AlertManagement::Alert
+      responses:
+        200:
+          description: An array of to-do items.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_ToDo'
+components:
+  schemas:
+    API_Entities_ToDo:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the to-do item.
+        project:
+          $ref: '#/components/schemas/API_Entities_Project'
+        author:
+          $ref: '#/components/schemas/API_Entities_User'
+        action_name:
+          type: string
+          description: The action that created the to-do item.
+        target_type:
+          type: string
+          description: The type of the target (Issue, MergeRequest, etc.).
+        target_url:
+          type: string
+          description: The URL of the target.
+        body:
+          type: string
+          description: The body of the to-do item.
+        state:
+          type: string
+          description: The state of the to-do item (pending, done).
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the to-do item was created.
+      required:
+      - id
+      - project
+      - author
+      - action_name
+      - target_type
+      - target_url
+      - body
+      - state
+      - created_at
+    API_Entities_Project:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the project.
+        name:
+          type: string
+          description: The name of the project.
+      required:
+      - id
+      - name
+    API_Entities_User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the user.
+        name:
+          type: string
+          description: The name of the user.
+      required:
+      - id
+      - name

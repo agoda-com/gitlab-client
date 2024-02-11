@@ -1,0 +1,123 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for interacting with GitLab repositories.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/repository/commits/{sha}/signature:
+    get:
+      summary: Get a commit's signature
+      description: Retrieve the GPG signature for a specific commit.
+      operationId: getCommitSignature
+      tags:
+      - Commit Signature
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: string
+      - name: sha
+        in: path
+        description: The SHA of the commit
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Commit signature retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_CommitSignature'
+components:
+  schemas:
+    API_Entities_CommitSignature:
+      type: object
+      properties:
+        signature:
+          type: string
+          description: The GPG signature data
+        verification_status:
+          type: string
+          description: The status of the signature verification
+        gpg_key_id:
+          type: string
+          description: The ID of the GPG key that made the signature
+        gpg_key_primary_keyid:
+          type: string
+          description: The primary key ID of the GPG key
+        gpg_key_user_name:
+          type: string
+          description: The name of the GPG key owner
+        gpg_key_user_email:
+          type: string
+          description: The email of the GPG key owner
+        gpg_key_subkey_id:
+          type: string
+          nullable: true
+          description: The ID of the subkey (if any)
+        gpg_key_keyid:
+          type: string
+          description: The key ID of the GPG key
+        gpg_key_fingerprint:
+          type: string
+          description: The fingerprint of the GPG key
+        gpg_key_created_at:
+          type: string
+          format: date-time
+          description: The creation date of the GPG key
+        gpg_key_expires_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: The expiration date of the GPG key (if any)
+        gpg_key_verified:
+          type: boolean
+          description: Whether the GPG key is verified
+        gpg_key_can_sign:
+          type: boolean
+          description: Whether the GPG key can be used to sign
+        gpg_key_can_encrypt_comms:
+          type: boolean
+          description: Whether the GPG key can be used to encrypt communications
+        gpg_key_can_encrypt_storage:
+          type: boolean
+          description: Whether the GPG key can be used to encrypt storage
+        gpg_key_can_certify:
+          type: boolean
+          description: Whether the GPG key can be used to certify other keys
+        gpg_key_public_key:
+          type: string
+          description: The public key data
+        gpg_key_email:
+          type: string
+          description: The email associated with the GPG key
+        gpg_key_subkeys:
+          type: array
+          items:
+            $ref: '#/components/schemas/API_Entities_GpgSubkey'
+        user:
+          $ref: '#/components/schemas/API_Entities_User'
+    API_Entities_GpgSubkey:
+      type: object
+      properties: 
+    API_Entities_User:
+      type: object
+      properties:
+        name:
+          type: string
+        username:
+          type: string
+        id:
+          type: integer
+        state:
+          type: string
+        avatar_url:
+          type: string
+        web_url:
+          type: string

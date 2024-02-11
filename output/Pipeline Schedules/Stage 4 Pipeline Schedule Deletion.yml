@@ -1,0 +1,45 @@
+openapi: 3.0.3
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing GitLab resources
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API endpoint
+paths:
+  /api/v4/projects/{id}/pipeline_schedules/{pipeline_schedule_id}:
+    delete:
+      summary: Delete a pipeline schedule
+      description: Deletes a specific pipeline schedule of a project.
+      operationId: deletePipelineSchedule
+      tags:
+      - Pipeline Schedules
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: string
+      - name: pipeline_schedule_id
+        in: path
+        description: The ID of the pipeline schedule
+        required: true
+        schema:
+          type: integer
+      responses:
+        204:
+          description: No Content - The pipeline schedule was successfully deleted.
+      security:
+      - oauth2:
+        - api
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://gitlab.example.com/oauth/authorize
+          tokenUrl: https://gitlab.example.com/oauth/token
+          scopes:
+            api: Grants complete read/write access to the API

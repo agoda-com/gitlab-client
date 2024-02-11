@@ -1,0 +1,57 @@
+openapi: 3.0.3
+info:
+  title: Sidekiq Job Statistics API
+  description: API for retrieving statistics about the jobs that Sidekiq has processed.
+  version: 1.0.0
+servers:
+- url: https://your-api-domain.com/api/v1
+  description: Main API server
+paths:
+  /api/v4/sidekiq/job_stats:
+    get:
+      summary: Get Sidekiq job statistics
+      description: Provides statistics about the jobs that Sidekiq has processed.
+      operationId: getSidekiqJobStats
+      tags:
+      - Job Statistics
+      responses:
+        200:
+          description: A JSON object containing the statistics of processed jobs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  processed:
+                    type: integer
+                    description: The total number of processed jobs.
+                  failed:
+                    type: integer
+                    description: The total number of failed jobs.
+                  enqueued:
+                    type: integer
+                    description: The current number of enqueued jobs.
+                  scheduled:
+                    type: integer
+                    description: The number of jobs scheduled for a future time.
+                  retries:
+                    type: integer
+                    description: The number of jobs scheduled for a retry.
+                  dead:
+                    type: integer
+                    description: The number of jobs that have been marked as dead (exhausted retries).
+                required:
+                - processed
+                - failed
+                - enqueued
+                - scheduled
+                - retries
+                - dead
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+security:
+- ApiKeyAuth: []

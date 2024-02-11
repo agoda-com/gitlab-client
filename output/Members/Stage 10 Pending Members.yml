@@ -1,0 +1,66 @@
+openapi: 3.0.3
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing GitLab resources including groups and pending members.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/groups/{id}/pending_members:
+    get:
+      summary: Get a list of pending members for a group
+      description: Returns a list of users who have been invited but have not yet accepted to join the group.
+      operationId: getGroupPendingMembers
+      tags:
+      - groups
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the group
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: An array of pending members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_PendingMember'
+components:
+  schemas:
+    API_Entities_PendingMember:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The ID of the user
+        name:
+          type: string
+          description: The name of the user
+        username:
+          type: string
+          description: The username of the user
+        state:
+          type: string
+          description: The state of the membership
+        avatar_url:
+          type: string
+          format: uri
+          description: The URL of the user's avatar
+        web_url:
+          type: string
+          format: uri
+          description: The URL of the user's GitLab profile
+      required:
+      - id
+      - name
+      - username
+      - state
+      - avatar_url
+      - web_url

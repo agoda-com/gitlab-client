@@ -1,0 +1,94 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing GitLab resources.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API endpoint
+paths:
+  /api/v4/projects/{id}/pipeline_schedules:
+    get:
+      summary: Get pipeline schedules
+      description: Get a list of all pipeline schedules for a project.
+      operationId: getPipelineSchedules
+      tags:
+      - pipeline schedules
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of pipeline schedules
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_PipelineSchedule'
+  /api/v4/projects/{id}/pipeline_schedules/{pipeline_schedule_id}:
+    get:
+      summary: Get a specific pipeline schedule
+      description: Get a specific pipeline schedule for a project.
+      operationId: getSpecificPipelineSchedule
+      tags:
+      - pipeline schedules
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+      - name: pipeline_schedule_id
+        in: path
+        description: The ID of the pipeline schedule
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: A single pipeline schedule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_PipelineSchedule'
+components:
+  schemas:
+    API_Entities_PipelineSchedule:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the pipeline schedule
+        description:
+          type: string
+          description: The description of the pipeline schedule
+        ref:
+          type: string
+          description: The branch or tag that will be used by the pipeline schedule
+        cron:
+          type: string
+          description: The cron pattern that the pipeline schedule will follow
+        cron_timezone:
+          type: string
+          description: Timezone for the cron pattern
+        next_run_at:
+          type: string
+          format: date-time
+          description: The next time the pipeline schedule will run
+        active:
+          type: boolean
+          description: Whether the pipeline schedule is active or not
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the pipeline schedule was created
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time when the pipeline schedule was last updated

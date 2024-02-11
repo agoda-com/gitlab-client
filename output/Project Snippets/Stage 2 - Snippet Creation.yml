@@ -1,0 +1,116 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for interacting with GitLab
+  contact:
+    name: GitLab Inc.
+    url: https://gitlab.com
+    email: support@gitlab.com
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/snippets:
+    post:
+      summary: Create a new snippet
+      description: Creates a new snippet in the specified project.
+      tags:
+      - Snippets
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Snippet creation data
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - title
+              - file_name
+              - content
+              - visibility
+              properties:
+                title:
+                  type: string
+                  description: The title of the snippet
+                file_name:
+                  type: string
+                  description: The name of the snippet file
+                content:
+                  type: string
+                  description: The content of the snippet
+                description:
+                  type: string
+                  description: The description of the snippet (optional)
+                visibility:
+                  type: string
+                  description: The snippet's visibility (public, internal, or private)
+      responses:
+        201:
+          description: Snippet created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Snippet'
+components:
+  schemas:
+    API_Entities_Snippet:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The ID of the snippet
+        title:
+          type: string
+          description: The title of the snippet
+        file_name:
+          type: string
+          description: The name of the snippet file
+        content:
+          type: string
+          description: The content of the snippet
+        visibility:
+          type: string
+          description: The snippet's visibility (public, internal, or private)
+        author:
+          $ref: '#/components/schemas/API_Entities_User'
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the snippet was created
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time when the snippet was last updated
+    API_Entities_User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The ID of the user
+        username:
+          type: string
+          description: The username of the user
+        name:
+          type: string
+          description: The name of the user
+        state:
+          type: string
+          description: The state of the user (active, blocked, etc.)
+        avatar_url:
+          type: string
+          format: uri
+          description: The avatar URL of the user
+        web_url:
+          type: string
+          format: uri
+          description: The web URL of the user's profile

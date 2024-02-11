@@ -1,0 +1,35 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing GitLab resources including wiki page deletion.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API endpoint
+paths:
+  /api/v4/projects/{id}/wikis/{slug}:
+    delete:
+      summary: Delete a wiki page by slug
+      description: Deletes a wiki page within a project based on the provided slug.
+      operationId: deleteWikiPageBySlug
+      tags:
+      - Wiki
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+      - name: slug
+        in: path
+        description: The slug of the wiki page
+        required: true
+        schema:
+          type: string
+      responses:
+        204:
+          description: No Content - Wiki page successfully deleted.
+      security:
+      - oauth2:
+        - write_wiki

@@ -1,0 +1,64 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for interacting with GitLab repositories.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API endpoint
+paths:
+  /api/v4/projects/{id}/repository/files/{file_path}/blame:
+    get:
+      summary: Get file blame
+      description: Retrieve the blame information for a specific file in a repository, including line-by-line authorship data.
+      operationId: getFileBlame
+      tags:
+      - Repository
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: string
+      - name: file_path
+        in: path
+        description: URL-encoded path to the file
+        required: true
+        schema:
+          type: string
+      - name: ref
+        in: query
+        description: The name of the branch, tag, or commit
+        required: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: Blame information retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    line:
+                      type: string
+                      description: The content of the line
+                    commit:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: The commit SHA
+                        author_name:
+                          type: string
+                          description: The name of the author of the commit
+                        author_email:
+                          type: string
+                          description: The email of the author of the commit
+                        date:
+                          type: string
+                          format: date-time
+                          description: The date of the commit

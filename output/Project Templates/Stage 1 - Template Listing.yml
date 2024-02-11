@@ -1,0 +1,69 @@
+openapi: 3.0.0
+info:
+  title: GitLab Templates API
+  version: 1.0
+  description: API for managing project templates in GitLab
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/templates/{type}:
+    get:
+      summary: Retrieves all templates of a specified type for a given project
+      description: This endpoint retrieves all templates of a specified type (e.g., issue templates, merge request templates) for a given project.
+      operationId: getProjectTemplates
+      tags:
+      - Templates
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: type
+        in: path
+        description: The type of the template (e.g., 'issues', 'merge_requests')
+        required: true
+        schema:
+          type: string
+          enum:
+          - issues
+          - merge_requests
+          - other_template_types
+      responses:
+        200:
+          description: An array of templates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_Template'
+components:
+  schemas:
+    API_Entities_Template:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the template
+        content:
+          type: string
+          description: The content of the template
+      required:
+      - name
+      - content
+security:
+- OAuth2:
+  - read_templates
+securitySchemes:
+  OAuth2:
+    type: oauth2
+    flows:
+      authorizationCode:
+        authorizationUrl: https://gitlab.example.com/oauth/authorize
+        tokenUrl: https://gitlab.example.com/oauth/token
+        scopes:
+          read_templates: Read access to project templates

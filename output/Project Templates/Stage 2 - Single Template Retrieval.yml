@@ -1,0 +1,59 @@
+openapi: 3.0.0
+info:
+  title: GitLab Templates API
+  version: 1.0
+  description: API for managing GitLab project templates
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/templates/{type}/{name}:
+    get:
+      summary: Fetches a single template
+      description: Retrieves a single template of a particular type by its key within a project.
+      operationId: getSingleTemplate
+      tags:
+      - Templates
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: type
+        in: path
+        required: true
+        description: The type of the template (e.g., 'dockerfiles', 'gitignores', 'licenses', etc.)
+        schema:
+          type: string
+      - name: name
+        in: path
+        required: true
+        description: The key of the template to retrieve
+        schema:
+          type: string
+      responses:
+        200:
+          description: Successful response with the template data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Template'
+components:
+  schemas:
+    API_Entities_Template:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the template
+        content:
+          type: string
+          description: The content of the template
+    API_Entities_Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: A message describing the error

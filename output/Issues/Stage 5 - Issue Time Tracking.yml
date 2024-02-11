@@ -1,0 +1,156 @@
+openapi: 3.0.0
+info:
+  title: GitLab Issue Time Tracking API
+  version: 1.0
+  description: API endpoints for managing issue time tracking in GitLab.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/issues/{issue_iid}/time_estimate:
+    post:
+      summary: Set a time estimate for an issue
+      operationId: setTimeEstimate
+      tags:
+      - issues
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of a project
+        schema:
+          type: integer
+      - name: issue_iid
+        in: path
+        required: true
+        description: The internal ID of a project's issue
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                duration:
+                  type: string
+                  description: The duration in human format (e.g., "3h30m")
+      responses:
+        201:
+          description: Time estimate successfully set
+  /api/v4/projects/{id}/issues/{issue_iid}/reset_time_estimate:
+    post:
+      summary: Reset the time estimate for an issue
+      operationId: resetTimeEstimate
+      tags:
+      - issues
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of a project
+        schema:
+          type: integer
+      - name: issue_iid
+        in: path
+        required: true
+        description: The internal ID of a project's issue
+        schema:
+          type: integer
+      responses:
+        201:
+          description: Time estimate successfully reset
+  /api/v4/projects/{id}/issues/{issue_iid}/add_spent_time:
+    post:
+      summary: Add spent time for an issue
+      operationId: addSpentTime
+      tags:
+      - issues
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of a project
+        schema:
+          type: integer
+      - name: issue_iid
+        in: path
+        required: true
+        description: The internal ID of a project's issue
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                duration:
+                  type: string
+                  description: The duration in human format (e.g., "2h15m")
+      responses:
+        201:
+          description: Spent time successfully added
+  /api/v4/projects/{id}/issues/{issue_iid}/reset_spent_time:
+    post:
+      summary: Reset the spent time for an issue
+      operationId: resetSpentTime
+      tags:
+      - issues
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of a project
+        schema:
+          type: integer
+      - name: issue_iid
+        in: path
+        required: true
+        description: The internal ID of a project's issue
+        schema:
+          type: integer
+      responses:
+        201:
+          description: Spent time successfully reset
+  /api/v4/projects/{id}/issues/{issue_iid}/time_stats:
+    get:
+      summary: Get time tracking statistics for an issue
+      operationId: getTimeStats
+      tags:
+      - issues
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of a project
+        schema:
+          type: integer
+      - name: issue_iid
+        in: path
+        required: true
+        description: The internal ID of a project's issue
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Time tracking statistics retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  time_estimate:
+                    type: integer
+                    description: Total time estimated
+                  total_time_spent:
+                    type: integer
+                    description: Total time spent
+                  human_time_estimate:
+                    type: string
+                    description: Human-readable time estimate
+                  human_total_time_spent:
+                    type: string
+                    description: Human-readable total time spent

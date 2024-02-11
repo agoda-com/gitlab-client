@@ -1,0 +1,67 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing GitLab resources
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/deployments/{deployment_id}:
+    get:
+      summary: Get a specific deployment
+      description: Retrieves details of a specific deployment by its ID within a project.
+      operationId: getProjectDeployment
+      tags:
+      - Deployments
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+      - name: deployment_id
+        in: path
+        description: The ID of the deployment
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Successful response with the details of the deployment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Deployment'
+components:
+  schemas:
+    API_Entities_Deployment:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the deployment
+        status:
+          type: string
+          description: The status of the deployment
+        ref:
+          type: string
+          description: The name of the branch or tag that was deployed
+        sha:
+          type: string
+          description: The commit SHA that was deployed
+        web_url:
+          type: string
+          description: The URL to view the deployment in the web interface
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the deployment was created
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time when the deployment was last updated
+security:
+- oauth2:
+  - read_api

@@ -1,0 +1,116 @@
+openapi: 3.0.0
+info:
+  title: GitLab Submodule Operations API
+  version: 1.0.0
+  description: API for managing GitLab submodules with detailed error handling and feedback
+servers:
+  - url: https://gitlab.example.com/api/v4
+    description: GitLab API endpoint
+
+paths:
+  # Define your submodule operation paths here
+  # ...
+
+components:
+  responses:
+    BadRequestError:
+      description: Bad request due to invalid input.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: "Invalid request parameters"
+            errors: ["The submodule path is invalid."]
+            code: 400
+            status: "error"
+    UnauthorizedError:
+      description: Authentication credentials were missing or incorrect.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: "Unauthorized: Access is denied due to invalid credentials."
+            errors: ["You must be logged in to perform this action."]
+            code: 401
+            status: "error"
+    NotFoundError:
+      description: The specified resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: "Resource not found"
+            errors: ["The specified submodule does not exist."]
+            code: 404
+            status: "error"
+    InternalServerError:
+      description: An unexpected error occurred on the server.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: "Internal server error"
+            errors: ["An unexpected error occurred. Please try again later."]
+            code: 500
+            status: "error"
+
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: A human-readable message providing more details about the error.
+        errors:
+          type: array
+          description: A list of error strings providing detailed information for troubleshooting.
+          items:
+            type: string
+        code:
+          type: integer
+          format: int32
+          description: The HTTP status code associated with the error.
+        status:
+          type: string
+          description: A string indicating the nature of the error (e.g., "error", "fail").
+
+# Define security schemes, parameters, and other components here
+# ...
+---
+paths:
+  /projects/{project_id}/repository/submodules/{submodule_path}:
+    get:
+      summary: Get details of a specific submodule
+      operationId: getSubmoduleDetails
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          description: The ID of the project
+          schema:
+            type: integer
+        - name: submodule_path
+          in: path
+          required: true
+          description: The path of the submodule
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved submodule details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmoduleDetails'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'

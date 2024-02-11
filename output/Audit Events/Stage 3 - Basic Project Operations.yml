@@ -1,0 +1,93 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing GitLab projects and their audit events.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/audit_events:
+    get:
+      summary: Get a list of audit events for a specified project
+      description: Returns a list of audit events for the project identified by the ID.
+      operationId: getProjectAuditEvents
+      tags:
+      - Projects
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: page
+        in: query
+        description: Page number for pagination
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        description: Number of items to list per page
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of audit events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_AuditEvent'
+  /api/v4/projects/{id}/audit_events/{audit_event_id}:
+    get:
+      summary: Get a single audit event for a specified project
+      description: Returns a single audit event for the project identified by the ID and audit event ID.
+      operationId: getProjectAuditEventById
+      tags:
+      - Projects
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: audit_event_id
+        in: path
+        required: true
+        description: The ID of the audit event
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An audit event object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_AuditEvent'
+components:
+  schemas:
+    API_Entities_AuditEvent:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the audit event
+        details:
+          type: object
+          description: Detailed information about the audit event
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the audit event was created
+        author_id:
+          type: integer
+          description: The ID of the user who triggered the audit event
+        entity_id:
+          type: integer
+          description: The ID of the entity that the event is associated with
+        entity_type:
+          type: string
+          description: The type of the entity that the event is associated with

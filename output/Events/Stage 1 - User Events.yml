@@ -1,0 +1,74 @@
+openapi: 3.0.0
+info:
+  title: GitLab User Events API
+  version: 1.0
+  description: API endpoints for retrieving user events in GitLab
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/events:
+    get:
+      summary: Retrieve a list of events for the authenticated user
+      description: Returns a list of events for the currently authenticated user.
+      operationId: getUserEvents
+      responses:
+        200:
+          description: An array of events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_Event'
+  /api/v4/users/{id}/events:
+    get:
+      summary: Get the contribution events for the specified user
+      description: Retrieves the contribution events for a user specified by their ID.
+      operationId: getUserContributionEvents
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the user to retrieve events for
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of contribution events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_Event'
+components:
+  schemas:
+    API_Entities_Event:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the event
+        title:
+          type: string
+          description: The title of the event
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the event was created
+        action_name:
+          type: string
+          description: The name of the action that generated the event
+        user_id:
+          type: integer
+          description: The ID of the user who triggered the event
+        user_name:
+          type: string
+          description: The name of the user who triggered the event
+        author_id:
+          type: integer
+          description: The ID of the author of the event
+        author_username:
+          type: string
+          description: The username of the author of the event

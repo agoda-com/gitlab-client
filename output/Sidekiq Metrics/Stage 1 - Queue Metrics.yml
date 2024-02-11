@@ -1,0 +1,44 @@
+openapi: 3.0.0
+info:
+  title: Sidekiq Queue Metrics API
+  version: 1.0.0
+  description: API for retrieving metrics about Sidekiq queues.
+servers:
+- url: https://your-gitlab-instance.com/api/v4
+  description: Main GitLab server
+paths:
+  /api/v4/sidekiq/queue_metrics:
+    get:
+      summary: Retrieves information about all registered queues
+      description: Returns data about each Sidekiq queue, including the number of jobs in the backlog and the latency of the queue.
+      operationId: getQueueMetrics
+      tags:
+      - Queue Metrics
+      responses:
+        200:
+          description: An array of queue metrics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_QueueMetric'
+components:
+  schemas:
+    API_Entities_QueueMetric:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the queue
+        backlog:
+          type: integer
+          description: The number of jobs in the queue waiting to be processed
+        latency:
+          type: number
+          format: float
+          description: The time in seconds since the oldest job in the queue was enqueued
+      required:
+      - name
+      - backlog
+      - latency

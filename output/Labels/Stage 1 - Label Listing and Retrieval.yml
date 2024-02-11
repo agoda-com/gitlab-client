@@ -1,0 +1,81 @@
+openapi: 3.0.0
+info:
+  title: GitLab Labels API
+  version: 1.0
+  description: API for managing labels in GitLab projects
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/labels:
+    get:
+      summary: Get a list of labels for a project
+      description: Returns a list of labels for the specified project.
+      operationId: getProjectLabels
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: An array of labels
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_Label'
+  /api/v4/projects/{id}/labels/{label_id}:
+    get:
+      summary: Get a single label for a project
+      description: Returns a single label for the specified project.
+      operationId: getProjectLabel
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: string
+      - name: label_id
+        in: path
+        description: The ID of the label
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: A label object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Label'
+components:
+  schemas:
+    API_Entities_Label:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The ID of the label
+        name:
+          type: string
+          description: The name of the label
+        color:
+          type: string
+          description: The color of the label, in
+        description:
+          type: string
+          description: The description of the label
+        created_at:
+          type: string
+          format: date-time
+          description: The creation date of the label
+        updated_at:
+          type: string
+          format: date-time
+          description: The last update date of the label

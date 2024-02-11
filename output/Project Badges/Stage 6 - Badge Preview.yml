@@ -1,0 +1,56 @@
+openapi: 3.0.0
+info:
+  title: GitLab Badge Preview API
+  version: 1.0
+  description: API for previewing how the link_url and image_url will be rendered after placeholder interpolation.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/badges/render:
+    get:
+      summary: Previews badge rendering
+      description: Previews how the link_url and image_url will be rendered after placeholder interpolation.
+      operationId: previewBadgeRendering
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: link_url
+        in: query
+        description: The URL that the badge will link to, with placeholders
+        required: true
+        schema:
+          type: string
+      - name: image_url
+        in: query
+        description: The URL of the badge image, with placeholders
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Badge rendering preview
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  link_url:
+                    type: string
+                    description: The interpolated link URL
+                  image_url:
+                    type: string
+                    description: The interpolated image URL
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+- bearerAuth: []

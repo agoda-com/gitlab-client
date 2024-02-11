@@ -1,0 +1,58 @@
+openapi: 3.0.0
+info:
+  title: GitLab Submodule API
+  description: API for managing submodules within GitLab repositories.
+  version: 1.0.0
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: Main GitLab server
+paths:
+  /api/v4/projects/{id}/repository/submodules/{submodule}:
+    get:
+      summary: Get a specific submodule
+      description: >
+        Retrieves information about a specific submodule within a repository.
+      operationId: getSubmodule
+      tags:
+      - submodules
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+      - name: submodule
+        in: path
+        description: The name of the submodule
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Submodule details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Submodule'
+              examples:
+                default:
+                  summary: Example response
+                  value:
+                    name: submodule-name
+                    commit_id: a1b2c3d4
+                    url: https://gitlab.example.com/another-project/submodule-name.git
+components:
+  schemas:
+    API_Entities_Submodule:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the submodule
+        commit_id:
+          type: string
+          description: The current commit ID that the submodule is pointing to
+        url:
+          type: string
+          description: The URL of the submodule's repository

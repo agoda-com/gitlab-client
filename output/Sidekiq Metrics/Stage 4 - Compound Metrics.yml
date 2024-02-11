@@ -1,0 +1,43 @@
+openapi: 3.0.0
+info:
+  title: Sidekiq Compound Metrics API
+  version: 1.0.0
+  description: API for retrieving compound metrics from Sidekiq.
+servers:
+- url: https://your-gitlab-instance.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/sidekiq/compound_metrics:
+    get:
+      summary: Get compound metrics
+      description: Compiles a compound response of queue metrics, process metrics, and job statistics.
+      operationId: getCompoundMetrics
+      tags:
+      - Sidekiq
+      responses:
+        200:
+          description: A compound metrics response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_CompoundMetricsResponse'
+components:
+  schemas:
+    API_Entities_CompoundMetricsResponse:
+      type: object
+      properties:
+        queue_metrics:
+          type: object
+          additionalProperties: true
+        process_metrics:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        job_statistics:
+          type: object
+          additionalProperties: true
+      required:
+      - queue_metrics
+      - process_metrics
+      - job_statistics

@@ -1,0 +1,74 @@
+openapi: 3.0.0
+info:
+  title: GitLab Project Pages Settings API
+  version: 1.0
+  description: API for managing GitLab Project Pages settings
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/pages:
+    get:
+      summary: Retrieve project pages settings
+      description: Get the Pages settings for a project, including the Pages URL, domain configuration, HTTPS enforcement, and active deployments.
+      operationId: getProjectPagesSettings
+      tags:
+      - Project Pages
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Project pages settings retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_ProjectPagesSettings'
+components:
+  schemas:
+    API_Entities_ProjectPagesSettings:
+      type: object
+      properties:
+        url:
+          type: string
+          description: The URL of the project pages
+        domain:
+          type: string
+          description: The custom domain configured for the project pages
+        https_enforced:
+          type: boolean
+          description: Indicates if HTTPS is enforced for the project pages
+        active_deployments:
+          type: array
+          items:
+            $ref: '#/components/schemas/API_Entities_Deployment'
+      required:
+      - url
+      - https_enforced
+      - active_deployments
+    API_Entities_Deployment:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the deployment
+        status:
+          type: string
+          description: The status of the deployment
+        created_at:
+          type: string
+          format: date-time
+          description: The time the deployment was created
+        updated_at:
+          type: string
+          format: date-time
+          description: The time the deployment was last updated
+      required:
+      - id
+      - status
+      - created_at
+      - updated_at

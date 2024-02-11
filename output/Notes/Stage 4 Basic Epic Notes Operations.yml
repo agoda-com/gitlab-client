@@ -1,0 +1,204 @@
+openapi: 3.0.0
+info:
+  title: GitLab Epic Notes API
+  version: 1.0
+  description: API for managing notes on epics in GitLab
+servers:
+- url: https://gitlab.example.com/api/v4
+paths:
+  /api/v4/groups/{id}/epics/{epic_id}/notes:
+    get:
+      summary: Get a list of notes for an epic
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the group
+      - name: epic_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the epic
+      responses:
+        200:
+          description: An array of notes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_Note'
+    post:
+      summary: Create a new note for an epic
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the group
+      - name: epic_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the epic
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_NoteCreate'
+      responses:
+        201:
+          description: Note created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Note'
+  /api/v4/groups/{id}/epics/{epic_id}/notes/{note_id}:
+    get:
+      summary: Get a single note for an epic
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the group
+      - name: epic_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the epic
+      - name: note_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the note
+      responses:
+        200:
+          description: A single note
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Note'
+    put:
+      summary: Update an existing note for an epic
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the group
+      - name: epic_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the epic
+      - name: note_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the note
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_NoteUpdate'
+      responses:
+        200:
+          description: Note updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Note'
+    delete:
+      summary: Delete a note from an epic
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the group
+      - name: epic_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the epic
+      - name: note_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the note
+      responses:
+        204:
+          description: Note deleted
+components:
+  schemas:
+    API_Entities_Note:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the note
+        body:
+          type: string
+          description: The content of the note
+        author:
+          $ref: '#/components/schemas/API_Entities_User'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    API_Entities_NoteCreate:
+      type: object
+      required:
+      - body
+      properties:
+        body:
+          type: string
+          description: The content of the note to be created
+    API_Entities_NoteUpdate:
+      type: object
+      required:
+      - body
+      properties:
+        body:
+          type: string
+          description: The updated content of the note
+    API_Entities_User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the user
+        name:
+          type: string
+          description: The name of the user
+        username:
+          type: string
+          description: The username of the user
+        state:
+          type: string
+          description: The state of the user account
+        avatar_url:
+          type: string
+          description: The URL of the user's avatar
+        web_url:
+          type: string
+          description: The URL of the user's GitLab profile

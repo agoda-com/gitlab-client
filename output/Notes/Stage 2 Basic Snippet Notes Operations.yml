@@ -1,0 +1,215 @@
+openapi: 3.0.0
+info:
+  title: GitLab Snippet Notes API
+  version: 1.0
+  description: API for managing notes on snippets in GitLab projects
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/snippets/{snippet_id}/notes:
+    get:
+      summary: Get all notes for a snippet
+      description: Retrieve all notes associated with a snippet in a project.
+      operationId: getSnippetNotes
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: snippet_id
+        in: path
+        required: true
+        description: The ID of the snippet
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of notes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_Note'
+    post:
+      summary: Create a new note for a snippet
+      description: Add a new note to a snippet in a project.
+      operationId: createSnippetNote
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: snippet_id
+        in: path
+        required: true
+        description: The ID of the snippet
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_NoteCreate'
+      responses:
+        201:
+          description: Note created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Note'
+  /api/v4/projects/{id}/snippets/{snippet_id}/notes/{note_id}:
+    get:
+      summary: Get a single note for a snippet
+      description: Retrieve a specific note associated with a snippet in a project.
+      operationId: getSnippetNote
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: snippet_id
+        in: path
+        required: true
+        description: The ID of the snippet
+        schema:
+          type: integer
+      - name: note_id
+        in: path
+        required: true
+        description: The ID of the note
+        schema:
+          type: integer
+      responses:
+        200:
+          description: A single note
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Note'
+    put:
+      summary: Update a note for a snippet
+      description: Update an existing note associated with a snippet in a project.
+      operationId: updateSnippetNote
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: snippet_id
+        in: path
+        required: true
+        description: The ID of the snippet
+        schema:
+          type: integer
+      - name: note_id
+        in: path
+        required: true
+        description: The ID of the note
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_NoteUpdate'
+      responses:
+        200:
+          description: Note updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Note'
+    delete:
+      summary: Delete a note for a snippet
+      description: Delete a specific note associated with a snippet in a project.
+      operationId: deleteSnippetNote
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: snippet_id
+        in: path
+        required: true
+        description: The ID of the snippet
+        schema:
+          type: integer
+      - name: note_id
+        in: path
+        required: true
+        description: The ID of the note
+        schema:
+          type: integer
+      responses:
+        204:
+          description: Note deleted successfully
+components:
+  schemas:
+    API_Entities_Note:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the note
+        body:
+          type: string
+          description: The content of the note
+        author:
+          $ref: '#/components/schemas/API_Entities_User'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    API_Entities_NoteCreate:
+      type: object
+      required:
+      - body
+      properties:
+        body:
+          type: string
+          description: The content of the note to be created
+    API_Entities_NoteUpdate:
+      type: object
+      required:
+      - body
+      properties:
+        body:
+          type: string
+          description: The updated content of the note
+    API_Entities_User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the user
+        name:
+          type: string
+          description: The name of the user
+        username:
+          type: string
+          description: The username of the user
+        state:
+          type: string
+          description: The state of the user
+        avatar_url:
+          type: string
+          description: The avatar URL of the user
+        web_url:
+          type: string
+          description: The web URL of the user profile

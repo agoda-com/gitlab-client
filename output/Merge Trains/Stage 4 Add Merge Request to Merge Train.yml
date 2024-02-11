@@ -1,0 +1,83 @@
+openapi: 3.0.3
+info:
+  title: GitLab Merge Train API
+  version: 1.0
+  description: API for managing merge trains in GitLab
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/merge_trains/merge_requests/{merge_request_iid}:
+    post:
+      summary: Add Merge Request to Merge Train
+      description: Adds a specified merge request to the merge train of a project.
+      operationId: addMergeRequestToMergeTrain
+      tags:
+      - Merge Train
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+      - name: merge_request_iid
+        in: path
+        description: The internal ID of the merge request
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Optional parameters for adding the merge request to the merge train
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                pipeline_target:
+                  type: string
+                  description: The ref where the pipeline will be targeted. Defaults to the target branch of the merge request.
+                  example: feature-branch
+                auto_merge_strategy:
+                  type: string
+                  description: The merge strategy when the merge request is added to the merge train. Can be 'merge_when_pipeline_succeeds', 'add_to_merge_train_when_pipeline_succeeds', or 'merge_immediately'.
+                  example: add_to_merge_train_when_pipeline_succeeds
+      responses:
+        201:
+          description: Merge request successfully added to the merge train
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_MergeRequestResponse'
+components:
+  schemas:
+    API_Entities_MergeRequestResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the merge request
+        iid:
+          type: integer
+          description: The internal ID of the merge request
+        project_id:
+          type: integer
+          description: The ID of the project
+        title:
+          type: string
+          description: The title of the merge request
+        description:
+          type: string
+          description: The description of the merge request
+        state:
+          type: string
+          description: The state of the merge request
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the merge request was created
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time when the merge request was last updated

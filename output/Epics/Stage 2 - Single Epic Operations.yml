@@ -1,0 +1,134 @@
+openapi: 3.0.0
+info:
+  title: GitLab Group Epics API
+  version: 1.0
+  description: API endpoints for managing epics within a GitLab group
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/groups/{id}/epics/{epic_iid}:
+    get:
+      summary: Get a single epic
+      description: Retrieves a single epic by its internal ID within a group.
+      operationId: getSingleEpic
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the group
+        schema:
+          type: integer
+      - name: epic_iid
+        in: path
+        required: true
+        description: The internal ID of the epic
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Epic retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Epic'
+    put:
+      summary: Update an epic
+      description: Updates an existing epic within a group.
+      operationId: updateEpic
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the group
+        schema:
+          type: integer
+      - name: epic_iid
+        in: path
+        required: true
+        description: The internal ID of the epic
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_Epic'
+      responses:
+        200:
+          description: Epic updated successfully
+    delete:
+      summary: Delete an epic
+      description: Deletes an epic from a group.
+      operationId: deleteEpic
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the group
+        schema:
+          type: integer
+      - name: epic_iid
+        in: path
+        required: true
+        description: The internal ID of the epic
+        schema:
+          type: integer
+      responses:
+        204:
+          description: Epic deleted successfully
+  /api/v4/groups/{id}/epics:
+    post:
+      summary: Create a new epic
+      description: Creates a new epic within the group.
+      operationId: createEpic
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the group
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_NewEpic'
+      responses:
+        201:
+          description: Epic created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Epic'
+components:
+  schemas:
+    API_Entities_Epic:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique ID of the epic
+        iid:
+          type: integer
+          description: The internal ID of the epic within the group
+        title:
+          type: string
+          description: The title of the epic
+        description:
+          type: string
+          description: The description of the epic
+        state:
+          type: string
+          description: The state of the epic
+    API_Entities_NewEpic:
+      type: object
+      properties:
+        title:
+          type: string
+          description: The title of the epic
+        description:
+          type: string
+          description: The description of the epic

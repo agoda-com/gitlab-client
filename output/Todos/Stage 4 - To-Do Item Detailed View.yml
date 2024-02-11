@@ -1,0 +1,63 @@
+openapi: 3.0.0
+info:
+  title: Agoda To-Do API
+  description: API for managing to-do items at Agoda
+  version: 1.0.0
+servers:
+- url: https://api.agoda.com/v1
+paths:
+  /api/v4/todos/{id}:
+    get:
+      summary: Get a detailed view of a to-do item
+      description: Retrieve all details of a single to-do item by its ID.
+      operationId: getTodoById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Unique identifier of the to-do item
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: A detailed view of the to-do item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_ToDoItem'
+components:
+  schemas:
+    API_Entities_ToDoItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        description:
+          type: string
+        dueDate:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum:
+          - pending
+          - in_progress
+          - completed
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    API_Entities_Error:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: integer
+          format: int32

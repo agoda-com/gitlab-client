@@ -1,0 +1,66 @@
+openapi: 3.0.3
+info:
+  title: GitLab Template Expansion API
+  version: 1.0.0
+  description: API for expanding templates in GitLab projects
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/templates/{type}/{name}:
+    get:
+      summary: Get a specific template by type and name for a project
+      description: >
+        Retrieves a specific template by type and name for a given project. Supports optional parameters 'fullname' and 'project' for licenses, and 'source_template_project_id' for identifying the source project of the template.
+      operationId: getProjectTemplate
+      tags:
+      - Templates
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: type
+        in: path
+        required: true
+        description: The type of the template (e.g., 'licenses', 'gitignores', etc.)
+        schema:
+          type: string
+      - name: name
+        in: path
+        required: true
+        description: The name of the template
+        schema:
+          type: string
+      - name: fullname
+        in: query
+        required: false
+        description: The full name of the license (optional, for licenses only)
+        schema:
+          type: string
+      - name: project
+        in: query
+        required: false
+        description: The project associated with the license (optional, for licenses only)
+        schema:
+          type: string
+      - name: source_template_project_id
+        in: query
+        required: false
+        description: The ID of the source project for the template (optional, for non-license templates)
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Template retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  content:
+                    type: string

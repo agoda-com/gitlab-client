@@ -1,0 +1,101 @@
+openapi: 3.0.0
+info:
+  title: User API
+  description: API for managing users in the system
+  version: 1.0.0
+servers:
+- url: https://api.yourdomain.com
+paths:
+  /api/v4/users:
+    get:
+      summary: Get a list of users
+      description: Returns a list of users
+      responses:
+        200:
+          description: A JSON array of user objects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_User'
+    post:
+      summary: Create a new user
+      description: Creates a new user with the given details
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_NewUser'
+      responses:
+        201:
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_User'
+  /api/v4/users/{id}:
+    get:
+      summary: Get a user by ID
+      description: Returns a single user
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the user to return
+        schema:
+          type: string
+      responses:
+        200:
+          description: A user object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_User'
+components:
+  schemas:
+    API_Entities_User:
+      type: object
+      required:
+      - id
+      - username
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the user
+        username:
+          type: string
+          description: User's username
+        email:
+          type: string
+          description: User's email address
+        name:
+          type: string
+          description: User's full name
+        status:
+          type: string
+          description: Status of the user's account
+        created_at:
+          type: string
+          format: date-time
+          description: When the user was added to the system
+    API_Entities_NewUser:
+      type: object
+      required:
+      - username
+      - email
+      - name
+      properties:
+        username:
+          type: string
+          description: User's username
+        email:
+          type: string
+          description: User's email address
+        name:
+          type: string
+          description: User's full name
+        password:
+          type: string
+          description: User's password

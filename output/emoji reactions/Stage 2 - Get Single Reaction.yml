@@ -1,0 +1,92 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing GitLab resources including getting single reaction details.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/issues/{issue_iid}/award_emoji/{award_id}:
+    get:
+      summary: Get a single award emoji for an issue
+      operationId: getIssueAwardEmoji
+      tags:
+      - issues
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: issue_iid
+        in: path
+        required: true
+        description: The internal ID of the issue
+        schema:
+          type: integer
+      - name: award_id
+        in: path
+        required: true
+        description: The ID of the award emoji
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Successful response with the award emoji details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_AwardEmoji'
+  /api/v4/projects/{id}/merge_requests/{merge_request_iid}/award_emoji/{award_id}:
+    get:
+      summary: Get a single award emoji for a merge request
+      operationId: getMergeRequestAwardEmoji
+      tags:
+      - merge_requests
+  /api/v4/projects/{id}/snippets/{snippet_id}/award_emoji/{award_id}:
+    get:
+      summary: Get a single award emoji for a snippet
+      operationId: getSnippetAwardEmoji
+      tags:
+      - snippets
+  /api/v4/projects/{id}/issues/{issue_iid}/notes/{note_id}/award_emoji/{award_id}:
+    get:
+      summary: Get a single award emoji for a note on an issue
+      operationId: getNoteAwardEmoji
+      tags:
+      - issue_notes
+components:
+  schemas:
+    API_Entities_AwardEmoji:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the award emoji
+        name:
+          type: string
+          description: The name of the award emoji
+        user:
+          $ref: '#/components/schemas/API_Entities_User'
+      required:
+      - id
+      - name
+      - user
+    API_Entities_User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the user
+        name:
+          type: string
+          description: The name of the user
+        username:
+          type: string
+          description: The username of the user
+      required:
+      - id
+      - name
+      - username

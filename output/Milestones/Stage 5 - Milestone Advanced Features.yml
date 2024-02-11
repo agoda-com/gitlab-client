@@ -1,0 +1,124 @@
+openapi: 3.0.0
+info:
+  title: GitLab Milestone Advanced Features API
+  version: 1.0
+  description: API endpoints for advanced milestone operations in GitLab.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/milestones/{milestone_id}/promote:
+    post:
+      summary: Promote project milestone to a group milestone
+      description: Promotes a project milestone to a group milestone. Available only for users who can administer the group.
+      operationId: promoteProjectMilestone
+      tags:
+      - Milestones
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+      - name: milestone_id
+        in: path
+        description: The ID of the project milestone
+        required: true
+        schema:
+          type: integer
+      responses:
+        201:
+          description: Milestone promoted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Milestone'
+      security:
+      - oauth2:
+        - write_repository
+  /api/v4/projects/{id}/milestones/{milestone_id}/burndown_events:
+    get:
+      summary: Get burndown chart events for a milestone
+      description: Retrieves burndown chart events for a specific milestone. Available only for users who can view the milestone.
+      operationId: getMilestoneBurndownEvents
+      tags:
+      - Milestones
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+      - name: milestone_id
+        in: path
+        description: The ID of the milestone
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Burndown events retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_BurndownEvent'
+      security:
+      - oauth2:
+        - read_repository
+components:
+  schemas:
+    API_Entities_Milestone:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        start_date:
+          type: string
+          format: date
+        due_date:
+          type: string
+          format: date
+        state:
+          type: string
+          enum:
+          - active
+          - closed
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        promoted_to_group_id:
+          type: integer
+    API_Entities_BurndownEvent:
+      type: object
+      properties:
+        created_at:
+          type: string
+          format: date-time
+        weight:
+          type: integer
+        action:
+          type: string
+          enum:
+          - added
+          - removed
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://gitlab.example.com/oauth/authorize
+          tokenUrl: https://gitlab.example.com/oauth/token
+          scopes:
+            read_repository: Grants read access to the repository
+            write_repository: Grants write access to the repository

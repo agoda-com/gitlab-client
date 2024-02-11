@@ -1,0 +1,81 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: GitLab API for searching within a group
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/groups/{id}/search:
+    get:
+      summary: Search within a group
+      description: Search within a group for issues, merge requests, milestones, projects, or users.
+      operationId: searchGroup
+      tags:
+      - groups
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the group owned by the authenticated user
+        required: true
+        schema:
+          type: string
+      - name: scope
+        in: query
+        description: The scope of the search. Possible values are issues, merge_requests, milestones, projects, users.
+        required: true
+        schema:
+          type: string
+          enum:
+          - issues
+          - merge_requests
+          - milestones
+          - projects
+          - users
+      - name: search
+        in: query
+        description: The search query
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  issues:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/API_Entities_Issue'
+                  merge_requests:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/API_Entities_MergeRequest'
+                  milestones:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/API_Entities_Milestone'
+                  projects:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/API_Entities_Project'
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/API_Entities_User'
+components:
+  schemas:
+    API_Entities_Issue:
+      type: object
+    API_Entities_MergeRequest:
+      type: object
+    API_Entities_Milestone:
+      type: object
+    API_Entities_Project:
+      type: object
+    API_Entities_User:
+      type: object

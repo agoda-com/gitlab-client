@@ -1,0 +1,140 @@
+openapi: 3.0.0
+info:
+  title: GitLab Group Milestones API
+  version: 1.0
+  description: API for managing group milestones in GitLab
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/groups/{id}/milestones/{milestone_id}:
+    get:
+      summary: Get a single group milestone
+      description: Retrieve details of a specific milestone within a group.
+      operationId: getGroupMilestone
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the group
+        schema:
+          type: integer
+      - name: milestone_id
+        in: path
+        required: true
+        description: The ID of the milestone
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Milestone'
+    put:
+      summary: Update a group milestone
+      description: Update an existing milestone within a group.
+      operationId: updateGroupMilestone
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the group
+        schema:
+          type: integer
+      - name: milestone_id
+        in: path
+        required: true
+        description: The ID of the milestone
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_Milestone'
+      responses:
+        200:
+          description: Milestone successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Milestone'
+    delete:
+      summary: Delete a group milestone
+      description: Delete a specific milestone within a group.
+      operationId: deleteGroupMilestone
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the group
+        schema:
+          type: integer
+      - name: milestone_id
+        in: path
+        required: true
+        description: The ID of the milestone
+        schema:
+          type: integer
+      responses:
+        204:
+          description: Milestone successfully deleted
+  /api/v4/groups/{id}/milestones:
+    post:
+      summary: Create a group milestone
+      description: Create a new milestone within a group.
+      operationId: createGroupMilestone
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the group
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_Milestone'
+      responses:
+        201:
+          description: Milestone successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Milestone'
+components:
+  schemas:
+    API_Entities_Milestone:
+      type: object
+      required:
+      - title
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        iid:
+          type: integer
+          readOnly: true
+        project_id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+        description:
+          type: string
+        due_date:
+          type: string
+          format: date
+        start_date:
+          type: string
+          format: date
+        state:
+          type: string
+          enum:
+          - active
+          - closed

@@ -1,0 +1,111 @@
+openapi: 3.0.0
+info:
+  title: GitLab Pipeline Schedule Variables API
+  version: 1.0
+  description: API for managing pipeline schedule variables in GitLab
+servers:
+- url: https://gitlab.example.com/api/v4
+paths:
+  /api/v4/projects/{id}/pipeline_schedules/{pipeline_schedule_id}/variables:
+    post:
+      summary: Create a pipeline schedule variable
+      description: Creates a new variable for a specific pipeline schedule.
+      operationId: createPipelineScheduleVariable
+      tags:
+      - Pipeline Schedule Variables
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: pipeline_schedule_id
+        in: path
+        required: true
+        description: The ID of the pipeline schedule
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                key:
+                  type: string
+                  description: The key of the variable
+                value:
+                  type: string
+                  description: The value of the variable
+      responses:
+        201:
+          description: Variable created successfully
+  /api/v4/projects/{id}/pipeline_schedules/{pipeline_schedule_id}/variables/{key}:
+    put:
+      summary: Update a pipeline schedule variable
+      description: Updates an existing variable for a specific pipeline schedule.
+      operationId: updatePipelineScheduleVariable
+      tags:
+      - Pipeline Schedule Variables
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: pipeline_schedule_id
+        in: path
+        required: true
+        description: The ID of the pipeline schedule
+        schema:
+          type: integer
+      - name: key
+        in: path
+        required: true
+        description: The key of the variable to update
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: string
+                  description: The new value for the variable
+      responses:
+        200:
+          description: Variable updated successfully
+    delete:
+      summary: Delete a pipeline schedule variable
+      description: Deletes a variable from a specific pipeline schedule.
+      operationId: deletePipelineScheduleVariable
+      tags:
+      - Pipeline Schedule Variables
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: pipeline_schedule_id
+        in: path
+        required: true
+        description: The ID of the pipeline schedule
+        schema:
+          type: integer
+      - name: key
+        in: path
+        required: true
+        description: The key of the variable to delete
+        schema:
+          type: string
+      responses:
+        204:
+          description: Variable deleted successfully

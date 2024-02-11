@@ -1,0 +1,54 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: GitLab API for interacting with GitLab resources.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/issues/{issue_iid}/user_agent_detail:
+    get:
+      summary: Get Issue User Agent Details
+      description: Retrieves user agent details for a specific issue within a project.
+      operationId: getIssueUserAgentDetails
+      tags:
+      - issues
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          type: string
+      - name: issue_iid
+        in: path
+        required: true
+        description: The internal ID of the project's issue
+        schema:
+          type: integer
+      responses:
+        200:
+          description: User agent details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_UserAgentDetail'
+components:
+  schemas:
+    API_Entities_UserAgentDetail:
+      type: object
+      properties:
+        user_agent:
+          type: string
+          description: The user agent string of the browser used when the issue was created
+        ip_address:
+          type: string
+          description: The IP address from which the issue was created
+        submitted:
+          type: boolean
+          description: Indicates if the user agent was submitted
+      required:
+      - user_agent
+      - ip_address
+      - submitted

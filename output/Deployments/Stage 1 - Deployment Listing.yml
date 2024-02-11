@@ -1,0 +1,130 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for interacting with GitLab CI/CD deployments
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/deployments:
+    get:
+      summary: Get a list of project deployments
+      description: Returns a list of deployments for a specific project.
+      operationId: getProjectDeployments
+      tags:
+      - deployments
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: string
+      - name: order_by
+        in: query
+        description: Return deployments ordered by field
+        required: false
+        schema:
+          type: string
+          enum:
+          - id
+          - iid
+          - created_at
+          - updated_at
+          - ref
+          - user_id
+          default: id
+      - name: sort
+        in: query
+        description: Return deployments sorted in asc or desc order
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: desc
+      - name: status
+        in: query
+        description: Return deployments with a specific status
+        required: false
+        schema:
+          type: string
+          enum:
+          - created
+          - running
+          - success
+          - failed
+          - canceled
+      responses:
+        200:
+          description: An array of deployments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_Deployment'
+components:
+  schemas:
+    API_Entities_Deployment:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The ID of the deployment
+        iid:
+          type: integer
+          format: int64
+          description: The internal ID of the deployment within the project
+        ref:
+          type: string
+          description: The reference (branch, tag, commit SHA) that was deployed
+        sha:
+          type: string
+          description: The SHA of the commit that was deployed
+        user:
+          $ref: '#/components/schemas/API_Entities_User'
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the deployment was created
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time when the deployment was updated
+        status:
+          type: string
+          enum:
+          - created
+          - running
+          - success
+          - failed
+          - canceled
+          description: The status of the deployment
+    API_Entities_User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The ID of the user
+        name:
+          type: string
+          description: The name of the user
+        username:
+          type: string
+          description: The username of the user
+        state:
+          type: string
+          description: The state of the user (active, blocked, etc.)
+        avatar_url:
+          type: string
+          format: uri
+          description: The avatar URL of the user
+        web_url:
+          type: string
+          format: uri
+          description: The web URL of the user profile

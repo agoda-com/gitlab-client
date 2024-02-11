@@ -1,0 +1,80 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: GitLab API for interacting with GitLab features.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/groups/{id}/epics/{epic_iid}/todo:
+    post:
+      summary: Create a to-do item for an epic
+      description: Manually creates a to-do item for the current user on an epic.
+      operationId: createEpicTodo
+      tags:
+      - todos
+      - epics
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the group owned by the authenticated user
+        required: true
+        schema:
+          type: integer
+      - name: epic_iid
+        in: path
+        description: The internal ID of the epic
+        required: true
+        schema:
+          type: integer
+      responses:
+        201:
+          description: To-do item created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_ToDo'
+      security:
+      - oauth2:
+        - write_todos
+components:
+  schemas:
+    API_Entities_ToDo:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the to-do item
+        project:
+          $ref: '#/components/schemas/API_Entities_Project'
+        author:
+          $ref: '#/components/schemas/API_Entities_User'
+        action_name:
+          type: string
+          description: The action to be done
+        target_type:
+          type: string
+          description: The type of the target
+        target_url:
+          type: string
+          description: The URL of the target
+        body:
+          type: string
+          description: The body of the to-do item
+        state:
+          type: string
+          description: The state of the to-do item
+        created_at:
+          type: string
+          format: date-time
+          description: The creation date of the to-do item
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://gitlab.example.com/oauth/authorize
+          tokenUrl: https://gitlab.example.com/oauth/token
+          scopes:
+            write_todos: Grants write access to to-do items

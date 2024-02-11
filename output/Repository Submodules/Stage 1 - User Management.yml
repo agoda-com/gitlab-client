@@ -1,0 +1,105 @@
+openapi: 3.0.0
+info:
+  title: GitLab User Management API
+  version: 1.0.0
+  description: API for managing users in GitLab
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/users:
+    get:
+      summary: List users
+      description: Get a list of all users.
+      operationId: listUsers
+      tags:
+      - users
+      responses:
+        200:
+          description: An array of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_User'
+    post:
+      summary: Create a new user
+      description: Create a new user with the provided details.
+      operationId: createUser
+      tags:
+      - users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_NewUser'
+      responses:
+        201:
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_User'
+  /api/v4/users/{user_id}:
+    get:
+      summary: Retrieve a single user
+      description: Get details of a specific user by their ID.
+      operationId: getUserById
+      tags:
+      - users
+      parameters:
+      - name: user_id
+        in: path
+        required: true
+        description: The ID of the user to retrieve
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Details of the user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_User'
+components:
+  schemas:
+    API_Entities_User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        state:
+          type: string
+        avatar_url:
+          type: string
+        web_url:
+          type: string
+      required:
+      - username
+      - email
+      - name
+    API_Entities_NewUser:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        password:
+          type: string
+      required:
+      - username
+      - email
+      - name
+      - password

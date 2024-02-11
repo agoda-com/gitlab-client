@@ -1,0 +1,65 @@
+openapi: 3.0.0
+info:
+  title: GitLab Merge Train API
+  version: 1.0
+  description: API for interacting with Merge Trains in GitLab
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/merge_trains/merge_requests/{merge_request_iid}:
+    get:
+      summary: Get a specific merge request in a merge train
+      description: >
+        Retrieves a specific merge request within a merge train for a given project.
+      operationId: getMergeRequestInMergeTrain
+      tags:
+      - Merge Trains
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: string
+      - name: merge_request_iid
+        in: path
+        description: The internal ID of the merge request within the project
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Merge request retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_MergeRequest'
+components:
+  schemas:
+    API_Entities_MergeRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the merge request
+        iid:
+          type: integer
+          description: The internal ID of the merge request within the project
+        title:
+          type: string
+          description: The title of the merge request
+        description:
+          type: string
+          description: The description of the merge request
+        state:
+          type: string
+          description: The state of the merge request (e.g., opened, closed, merged)
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the merge request was created
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time when the merge request was last updated

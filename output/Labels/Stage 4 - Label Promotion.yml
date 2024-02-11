@@ -1,0 +1,74 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing GitLab resources.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/labels/{label_id}/promote:
+    put:
+      summary: Promote a project label to a group label
+      description: >
+        Promotes a project label to a group label. This operation is idempotent, if the label is already a group label, this endpoint will respond as if the promotion was successful.
+      operationId: promoteProjectLabel
+      tags:
+      - Labels
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: integer
+      - name: label_id
+        in: path
+        description: The ID of the project label to promote
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Label promotion successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Label'
+      security:
+      - oauth2:
+        - write_labels
+        - read_labels
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://gitlab.example.com/oauth/authorize
+          tokenUrl: https://gitlab.example.com/oauth/token
+          scopes:
+            read_labels: read labels
+            write_labels: write labels
+  schemas:
+    API_Entities_Label:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 42
+        name:
+          type: string
+          example: bug
+        color:
+          type: string
+          example: '#FF0000'
+        description:
+          type: string
+          example: Label for bug reports
+        type:
+          type: string
+          example: GroupLabel
+        group_id:
+          type: integer
+          example: 5

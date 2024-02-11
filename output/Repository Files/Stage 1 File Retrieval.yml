@@ -1,0 +1,125 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for file retrieval in GitLab projects
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/repository/files/{file_path}:
+    get:
+      summary: Get a repository file
+      description: Get information about a repository file including content, encoding, and more.
+      operationId: getRepositoryFile
+      tags:
+      - Repository Files
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          type: string
+      - name: file_path
+        in: path
+        required: true
+        description: URL-encoded path to the file
+        schema:
+          type: string
+      - name: ref
+        in: query
+        description: The name of the branch, tag, or commit
+        schema:
+          type: string
+      responses:
+        200:
+          description: File retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_RepositoryFile'
+    head:
+      summary: Check if a repository file exists
+      description: Check if a file exists in the repository by path
+      operationId: headRepositoryFile
+      tags:
+      - Repository Files
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          type: string
+      - name: file_path
+        in: path
+        required: true
+        description: URL-encoded path to the file
+        schema:
+          type: string
+      - name: ref
+        in: query
+        description: The name of the branch, tag, or commit
+        schema:
+          type: string
+      responses:
+        200:
+          description: File exists
+  /api/v4/projects/{id}/repository/files/{file_path}/raw:
+    get:
+      summary: Get the raw file content
+      description: Get the raw content of a repository file.
+      operationId: getRawFile
+      tags:
+      - Repository Files
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          type: string
+      - name: file_path
+        in: path
+        required: true
+        description: URL-encoded path to the file
+        schema:
+          type: string
+      - name: ref
+        in: query
+        description: The name of the branch, tag, or commit
+        schema:
+          type: string
+      responses:
+        200:
+          description: Raw file content retrieved successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+components:
+  schemas:
+    API_Entities_RepositoryFile:
+      type: object
+      properties:
+        file_name:
+          type: string
+        file_path:
+          type: string
+        size:
+          type: integer
+        encoding:
+          type: string
+        content:
+          type: string
+        content_sha256:
+          type: string
+        ref:
+          type: string
+        blob_id:
+          type: string
+        commit_id:
+          type: string
+        last_commit_id:
+          type: string

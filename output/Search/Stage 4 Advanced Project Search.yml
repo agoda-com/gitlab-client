@@ -1,0 +1,95 @@
+openapi: 3.0.0
+info:
+  title: GitLab Advanced Project Search API
+  version: 1.0
+  description: API for searching within a GitLab project across various scopes.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/search:
+    get:
+      summary: Search within a project
+      description: Search for content within a project's blobs, commits, notes, or wiki_blobs.
+      operationId: searchProject
+      tags:
+      - search
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: string
+      - name: scope
+        in: query
+        description: The search scope. Possible values are blobs, commits, notes, wiki_blobs.
+        required: true
+        schema:
+          type: string
+          enum:
+          - blobs
+          - commits
+          - notes
+          - wiki_blobs
+      - name: search
+        in: query
+        description: The search query string.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Search results returned successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  blobs:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/API_Entities_SearchResult'
+                  commits:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/API_Entities_SearchResult'
+                  notes:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/API_Entities_SearchResult'
+                  wiki_blobs:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/API_Entities_SearchResult'
+components:
+  schemas:
+    API_Entities_SearchResult:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The ID of the result.
+        title:
+          type: string
+          description: The title or name of the result.
+        ref:
+          type: string
+          description: The reference (branch or tag) if applicable.
+        path:
+          type: string
+          description: The path of the file or directory.
+        filename:
+          type: string
+          description: The name of the file.
+        startline:
+          type: integer
+          format: int32
+          description: The starting line of the match.
+        data:
+          type: string
+          description: The content of the match.
+security:
+- oauth2:
+  - read_repository

@@ -1,0 +1,117 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+servers:
+- url: https://gitlab.example.com/api/v4
+paths:
+  /api/v4/projects/{id}/repository/commits:
+    post:
+      summary: Create a commit with multiple files and actions
+      operationId: createCommit
+      tags:
+      - commits
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_CommitPayload'
+      responses:
+        201:
+          description: Commit created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_CommitResponse'
+  /api/v4/projects/{id}/repository/commits/{sha}:
+    get:
+      summary: Get a specific commit identified by the commit hash or name of a branch or tag
+      operationId: getCommit
+      tags:
+      - commits
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          type: string
+      - name: sha
+        in: path
+        required: true
+        description: The commit hash or name of a branch or tag
+        schema:
+          type: string
+      responses:
+        200:
+          description: Commit details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_CommitDetail'
+components:
+  schemas:
+    API_Entities_CommitPayload:
+      type: object
+      properties:
+        branch:
+          type: string
+          description: Name of the branch to commit into
+        commit_message:
+          type: string
+          description: Commit message
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/API_Entities_CommitAction'
+      required:
+      - branch
+      - commit_message
+      - actions
+    API_Entities_CommitAction:
+      type: object
+      properties:
+        action:
+          type: string
+          description: The action to perform
+        file_path:
+          type: string
+          description: Full path to the file
+        content:
+          type: string
+          description: File content
+      required:
+      - action
+      - file_path
+    API_Entities_CommitResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The commit hash
+        short_id:
+          type: string
+          description: The short commit hash
+        title:
+          type: string
+          description: The commit title
+    API_Entities_CommitDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The commit hash
+        short_id:
+          type: string
+          description: The short commit hash
+        title:
+          type: string
+          description: The commit title

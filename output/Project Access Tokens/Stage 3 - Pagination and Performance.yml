@@ -1,0 +1,100 @@
+openapi: 3.0.0
+info:
+  title: GitLab Access Tokens API
+  version: 1.0
+servers:
+- url: https://gitlab.example.com/api/v4
+paths:
+  /api/v4/projects/{id}/access_tokens:
+    get:
+      summary: Get a list of access tokens for a project
+      description: Returns a paginated list of access tokens for the specified project.
+      operationId: getProjectAccessTokens
+      tags:
+      - projects
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+      - name: page
+        in: query
+        description: Page number of the paginated list.
+        required: false
+        schema:
+          type: integer
+          default: 1
+      - name: per_page
+        in: query
+        description: Number of items to return per page.
+        required: false
+        schema:
+          type: integer
+          default: 20
+      responses:
+        200:
+          description: An array of access tokens
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    description: Total number of access tokens available.
+                  per_page:
+                    type: integer
+                    description: Number of items per page.
+                  page:
+                    type: integer
+                    description: Current page number.
+                  prev_page:
+                    type: integer
+                    description: Previous page number, if available.
+                  next_page:
+                    type: integer
+                    description: Next page number, if available.
+                  total_pages:
+                    type: integer
+                    description: Total number of pages.
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/API_Entities_AccessToken'
+                required:
+                - total
+                - per_page
+                - page
+                - items
+components:
+  schemas:
+    API_Entities_AccessToken:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the access token.
+        name:
+          type: string
+          description: The name of the access token.
+        scopes:
+          type: array
+          items:
+            type: string
+          description: The scopes granted to the access token.
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the access token was created.
+        expires_at:
+          type: string
+          format: date-time
+          description: The date and time when the access token will expire.
+      required:
+      - id
+      - name
+      - scopes
+      - created_at
+      - expires_at

@@ -1,0 +1,104 @@
+openapi: 3.0.0
+info:
+  title: GitLab API Milestone Listing
+  version: 1.0
+servers:
+- url: https://gitlab.example.com/api/v4
+paths:
+  /api/v4/projects/{id}/milestones:
+    get:
+      summary: Get a list of project milestones
+      description: >
+        Retrieves milestones for a specified project. Supports filtering by iid, state, title, search query, and updated_before/updated_after timestamps.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: iids[]
+        in: query
+        description: Return only the milestones having the given iid
+        schema:
+          type: array
+          items:
+            type: integer
+      - name: state
+        in: query
+        description: Return only active or closed milestones
+        schema:
+          type: string
+          enum:
+          - active
+          - closed
+      - name: title
+        in: query
+        description: Return only milestones with the given title
+        schema:
+          type: string
+      - name: search
+        in: query
+        description: Search milestones for text present in the title, description, or comments
+        schema:
+          type: string
+      - name: updated_before
+        in: query
+        description: Return only milestones updated before the given time
+        schema:
+          type: string
+          format: date-time
+      - name: updated_after
+        in: query
+        description: Return only milestones updated after the given time
+        schema:
+          type: string
+          format: date-time
+      responses:
+        200:
+          description: An array of milestones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_Milestone'
+components:
+  schemas:
+    API_Entities_Milestone:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the milestone
+        iid:
+          type: integer
+          description: The internal ID of the milestone within the project
+        project_id:
+          type: integer
+          description: The ID of the project
+        title:
+          type: string
+          description: The title of the milestone
+        description:
+          type: string
+          description: The description of the milestone
+        state:
+          type: string
+          description: The state of the milestone (active, closed)
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the milestone was created
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time when the milestone was last updated
+        due_date:
+          type: string
+          format: date
+          description: The due date of the milestone
+        start_date:
+          type: string
+          format: date
+          description: The start date of the milestone

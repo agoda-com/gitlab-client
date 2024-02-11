@@ -1,0 +1,181 @@
+openapi: 3.0.0
+info:
+  title: GitLab Issues API
+  version: 1.0
+  description: API for managing issues in GitLab projects
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/issues:
+    get:
+      summary: Get a list of all issues
+      operationId: listIssues
+      tags:
+      - issues
+      responses:
+        200:
+          description: An array of issues
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_Issue'
+  /api/v4/projects/{id}/issues/{issue_iid}:
+    get:
+      summary: Get a single issue by project ID and issue IID
+      operationId: getSingleIssue
+      tags:
+      - issues
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: issue_iid
+        in: path
+        required: true
+        description: The IID of the issue within the project
+        schema:
+          type: integer
+      responses:
+        200:
+          description: A single issue object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Issue'
+    post:
+      summary: Create a new issue in the specified project
+      operationId: createIssue
+      tags:
+      - issues
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_NewIssue'
+      responses:
+        201:
+          description: Issue created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Issue'
+    put:
+      summary: Update an existing issue in the specified project
+      operationId: updateIssue
+      tags:
+      - issues
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: issue_iid
+        in: path
+        required: true
+        description: The IID of the issue within the project
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_UpdateIssue'
+      responses:
+        200:
+          description: Issue updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Issue'
+    delete:
+      summary: Delete an issue from the specified project
+      operationId: deleteIssue
+      tags:
+      - issues
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: issue_iid
+        in: path
+        required: true
+        description: The IID of the issue within the project
+        schema:
+          type: integer
+      responses:
+        204:
+          description: Issue deleted
+components:
+  schemas:
+    API_Entities_Issue:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the issue
+        iid:
+          type: integer
+          description: The internal ID of the issue within the project
+        project_id:
+          type: integer
+          description: The ID of the project
+        title:
+          type: string
+          description: The title of the issue
+        description:
+          type: string
+          description: The description of the issue
+        state:
+          type: string
+          description: The state of the issue (opened, closed)
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the issue was created
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time when the issue was last updated
+    API_Entities_NewIssue:
+      type: object
+      required:
+      - title
+      properties:
+        title:
+          type: string
+          description: The title of the issue
+        description:
+          type: string
+          description: The description of the issue
+    API_Entities_UpdateIssue:
+      type: object
+      properties:
+        title:
+          type: string
+          description: The updated title of the issue
+        description:
+          type: string
+          description: The updated description of the issue
+        state_event:
+          type: string
+          description: The state event of the issue (close, reopen)

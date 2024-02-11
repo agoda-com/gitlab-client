@@ -1,0 +1,70 @@
+openapi: 3.0.0
+info:
+  title: GitLab Submodule Update Validation API
+  version: 1.0
+  description: API endpoints for validating submodule updates in GitLab repositories.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{project_id}/repository/submodules/{submodule_path}/validate:
+    post:
+      summary: Validate a submodule update
+      description: >
+        This endpoint validates a submodule update by checking commit history and branch status to ensure the update does not break the repository state.
+      operationId: validateSubmoduleUpdate
+      tags:
+      - Submodule Validation
+      parameters:
+      - name: project_id
+        in: path
+        required: true
+        description: The ID of the project.
+        schema:
+          type: integer
+      - name: submodule_path
+        in: path
+        required: true
+        description: The path of the submodule within the repository.
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                commit_sha:
+                  type: string
+                  description: The SHA of the commit to validate.
+                branch:
+                  type: string
+                  description: The branch to check for status.
+      responses:
+        200:
+          description: Submodule update is valid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  valid:
+                    type: boolean
+                  message:
+                    type: string
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://gitlab.example.com/oauth/authorize
+          tokenUrl: https://gitlab.example.com/oauth/token
+          scopes:
+            read_repository: For read-only access to the repository
+            write_repository: For write access to the repository
+security:
+- OAuth2:
+  - read_repository
+  - write_repository

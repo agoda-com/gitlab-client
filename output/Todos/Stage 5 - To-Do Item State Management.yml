@@ -1,0 +1,76 @@
+openapi: 3.0.0
+info:
+  title: To-Do Item State Management API
+  version: 1.0.0
+  description: API for managing the state of to-do items in a to-do list application.
+servers:
+  - url: 'https://api.yourdomain.com/v1'
+    description: Production server
+
+paths:
+  /todos/{todoId}/state:
+    parameters:
+      - name: todoId
+        in: path
+        required: true
+        description: The unique identifier of the to-do item.
+        schema:
+          type: string
+    put:
+      summary: Update the state of a to-do item
+      description: Toggles the state of a specified to-do item between 'pending' and 'done'.
+      operationId: updateTodoItemState
+      tags:
+        - To-Do Item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                state:
+                  type: string
+                  enum:
+                    - pending
+                    - done
+              required:
+                - state
+      responses:
+        '200':
+          description: The to-do item state was successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToDoItem'
+        '400':
+          description: Invalid input, object invalid.
+        '404':
+          description: A to-do item with the specified ID was not found.
+        '500':
+          description: Internal server error.
+
+components:
+  schemas:
+    ToDoItem:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the to-do item.
+        title:
+          type: string
+          description: The title of the to-do item.
+        description:
+          type: string
+          description: The description of the to-do item.
+        state:
+          type: string
+          enum:
+            - pending
+            - done
+          description: The current state of the to-do item.
+      required:
+        - id
+        - title
+        - state

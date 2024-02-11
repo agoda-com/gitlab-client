@@ -1,0 +1,83 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+servers:
+- url: https://gitlab.example.com/api/v4
+paths:
+  /api/v4/projects/{id}/milestones:
+    get:
+      summary: Get a list of project milestones
+      description: Get a list of project milestones. You can filter the list by milestone IID, state, title, or search for milestones containing a specific term.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: iids[]
+        in: query
+        description: Return only the milestones having the given iid
+        schema:
+          type: array
+          items:
+            type: integer
+      - name: state
+        in: query
+        description: Return only active or closed milestones
+        schema:
+          type: string
+          enum:
+          - active
+          - closed
+      - name: title
+        in: query
+        description: Return only milestones with the given title
+        schema:
+          type: string
+      - name: search
+        in: query
+        description: Search for milestones by title
+        schema:
+          type: string
+      responses:
+        200:
+          description: An array of project milestones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_Milestone'
+components:
+  schemas:
+    API_Entities_Milestone:
+      type: object
+      properties:
+        id:
+          type: integer
+        iid:
+          type: integer
+        project_id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        state:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        due_date:
+          type: string
+          format: date
+        start_date:
+          type: string
+          format: date
+        web_url:
+          type: string

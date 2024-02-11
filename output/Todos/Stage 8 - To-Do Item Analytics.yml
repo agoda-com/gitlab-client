@@ -1,0 +1,86 @@
+openapi: 3.0.0
+info:
+  title: To-Do Item Analytics API
+  version: 1.0.0
+  description: API endpoints for analytics on to-do items
+servers:
+- url: https://api.yourdomain.com/v1
+  description: Production server
+paths:
+  /api/v4/todos/analytics:
+    get:
+      summary: Get analytics for to-do items
+      description: Retrieve analytics data for to-do items, including creation, completion rates, and other metrics.
+      operationId: getTodoAnalytics
+      tags:
+      - Analytics
+      parameters:
+      - in: query
+        name: startDate
+        schema:
+          type: string
+          format: date
+        description: Start date for the analytics period.
+        required: false
+      - in: query
+        name: endDate
+        schema:
+          type: string
+          format: date
+        description: End date for the analytics period.
+        required: false
+      - in: query
+        name: groupBy
+        schema:
+          type: string
+          enum:
+          - day
+          - week
+          - month
+        description: How to group the analytics data.
+        required: false
+      responses:
+        200:
+          description: A list of analytics data for to-do items.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalCreated:
+                    type: integer
+                    description: Total number of to-do items created.
+                  totalCompleted:
+                    type: integer
+                    description: Total number of to-do items completed.
+                  completionRate:
+                    type: number
+                    format: float
+                    description: The rate of completed to-do items over created ones.
+                  analyticsByPeriod:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        period:
+                          type: string
+                          description: The period for which the data is aggregated.
+                        created:
+                          type: integer
+                          description: Number of to-do items created in the period.
+                        completed:
+                          type: integer
+                          description: Number of to-do items completed in the period.
+                required:
+                - totalCreated
+                - totalCompleted
+                - completionRate
+                - analyticsByPeriod
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+- BearerAuth: []

@@ -1,0 +1,110 @@
+openapi: 3.0.0
+info:
+  title: GitLab Board Lists API
+  version: 1.0.0
+  description: API for managing board lists in GitLab projects
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/boards/{board_id}/lists:
+    get:
+      summary: Get all board lists
+      description: Retrieve all lists from a specific board within a project.
+      operationId: getBoardLists
+      tags:
+      - Board Lists
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: board_id
+        in: path
+        required: true
+        description: The ID of the board
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of board lists
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_BoardList'
+    post:
+      summary: Create a new board list
+      description: Create a new list for a specific board within a project.
+      operationId: createBoardList
+      tags:
+      - Board Lists
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: board_id
+        in: path
+        required: true
+        description: The ID of the board
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_NewBoardList'
+      responses:
+        201:
+          description: Board list created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_BoardList'
+components:
+  schemas:
+    API_Entities_BoardList:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the list
+        label:
+          type: object
+          properties:
+            name:
+              type: string
+              description: The name of the label associated with the list
+            color:
+              type: string
+              description: The color of the label
+            description:
+              type: string
+              description: The description of the label
+        position:
+          type: integer
+          description: The position of the list on the board
+        max_issue_count:
+          type: integer
+          description: Maximum number of issues in the list
+        max_issue_weight:
+          type: integer
+          description: Maximum weight of issues in the list
+        limit_metric:
+          type: string
+          description: The metric to limit the list by
+    API_Entities_NewBoardList:
+      type: object
+      required:
+      - label_id
+      properties:
+        label_id:
+          type: integer
+          description: The ID of the label to associate with the new list

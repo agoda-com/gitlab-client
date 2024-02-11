@@ -1,0 +1,49 @@
+openapi: 3.0.0
+info:
+  title: GitLab Badge Deletion API
+  version: 1.0.0
+  description: API for managing badges in GitLab projects
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/badges/{badge_id}:
+    delete:
+      summary: Removes a badge from a project
+      description: Deletes a badge from the project given the project ID and badge ID.
+      operationId: deleteProjectBadge
+      tags:
+      - Badges
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: badge_id
+        in: path
+        description: The ID of the badge to delete
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        204:
+          description: No Content - Badge successfully deleted
+      security:
+      - oauth2:
+        - write:badges
+        - read:badges
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://gitlab.example.com/oauth/authorize
+          tokenUrl: https://gitlab.example.com/oauth/token
+          scopes:
+            read:badges: Read badges
+            write:badges: Write badges

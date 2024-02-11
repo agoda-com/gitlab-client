@@ -1,0 +1,72 @@
+openapi: 3.0.0
+info:
+  title: GitLab Wiki API
+  version: 1.0
+  description: API for managing GitLab project wikis
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/wikis:
+    get:
+      summary: List all wiki pages for a project
+      description: Returns a list of all wiki pages for the specified project.
+      operationId: listProjectWikiPages
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of wiki pages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_WikiPage'
+  /api/v4/projects/{id}/wikis/{slug}:
+    get:
+      summary: Get a specific wiki page by slug
+      description: Returns a single wiki page for the specified project by slug.
+      operationId: getProjectWikiPageBySlug
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: slug
+        in: path
+        required: true
+        description: The slug of the wiki page
+        schema:
+          type: string
+      responses:
+        200:
+          description: A wiki page object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_WikiPage'
+components:
+  schemas:
+    API_Entities_WikiPage:
+      type: object
+      properties:
+        slug:
+          type: string
+          description: The slug of the wiki page
+        title:
+          type: string
+          description: The title of the wiki page
+        content:
+          type: string
+          description: The raw content of the wiki page
+        format:
+          type: string
+          description: The format of the wiki page (e.g., markdown, rdoc)

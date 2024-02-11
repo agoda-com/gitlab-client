@@ -1,0 +1,134 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing GitLab projects and boards
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/boards/{board_id}:
+    get:
+      summary: Get a single board
+      description: Retrieve details of a specific board within a project.
+      operationId: getBoardDetails
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: board_id
+        in: path
+        required: true
+        description: The ID of the board
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Board details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Board'
+    put:
+      summary: Update a board
+      description: Update the details of a specific board within a project.
+      operationId: updateBoardDetails
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: board_id
+        in: path
+        required: true
+        description: The ID of the board
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_Board'
+      responses:
+        200:
+          description: Board updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Board'
+    delete:
+      summary: Delete a board
+      description: Delete a specific board within a project.
+      operationId: deleteBoard
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: board_id
+        in: path
+        required: true
+        description: The ID of the board
+        schema:
+          type: integer
+      responses:
+        204:
+          description: Board deleted successfully
+components:
+  schemas:
+    API_Entities_Board:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the board
+        name:
+          type: string
+          description: The name of the board
+        project_id:
+          type: integer
+          description: The ID of the project the board belongs to
+        milestone_id:
+          type: integer
+          description: The ID of the milestone associated with the board
+        labels:
+          type: array
+          items:
+            type: string
+          description: List of labels associated with the board
+        assignee:
+          $ref: '#/components/schemas/API_Entities_User'
+        weight:
+          type: integer
+          description: The weight of the board
+      required:
+      - id
+      - name
+      - project_id
+    API_Entities_User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the user
+        username:
+          type: string
+          description: The username of the user
+        name:
+          type: string
+          description: The full name of the user
+        state:
+          type: string
+          description: The state of the user (active, blocked, etc.)
+      required:
+      - id
+      - username
+      - name

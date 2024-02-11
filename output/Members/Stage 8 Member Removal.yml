@@ -1,0 +1,63 @@
+openapi: 3.0.0
+info:
+  title: GitLab Member Removal API
+  version: 1.0
+  description: API for removing members from groups and projects in GitLab
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/groups/{id}/members/{user_id}:
+    delete:
+      summary: Remove a member from a group
+      description: Deletes a user from a group's members list.
+      operationId: removeGroupMember
+      tags:
+      - groups
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the group
+        required: true
+        schema:
+          type: integer
+      - name: user_id
+        in: path
+        description: The ID of the user to remove
+        required: true
+        schema:
+          type: integer
+      responses:
+        204:
+          description: Member removed successfully
+  /api/v4/projects/{id}/members/{user_id}:
+    delete:
+      summary: Remove a member from a project
+      description: Deletes a user from a project's members list.
+      operationId: removeProjectMember
+      tags:
+      - projects
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+      - name: user_id
+        in: path
+        description: The ID of the user to remove
+        required: true
+        schema:
+          type: integer
+      responses:
+        204:
+          description: Member removed successfully
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+- BearerAuth: []

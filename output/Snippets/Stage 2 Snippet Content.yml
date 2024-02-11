@@ -1,0 +1,70 @@
+openapi: 3.0.0
+info:
+  title: GitLab Snippets API
+  version: 1.0
+  description: API for managing GitLab snippets
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/snippets/{id}/raw:
+    get:
+      summary: Get raw snippet content
+      description: Retrieve the raw content of a snippet by its ID.
+      operationId: getSnippetRawContent
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the snippet
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Raw snippet content retrieved successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+  /api/v4/snippets/{id}/files/{ref}/{file_path}/raw:
+    get:
+      summary: Get raw file content from a snippet
+      description: Retrieve the raw content of a specific file from a snippet by specifying the snippet ID, the reference (branch, tag, commit), and the file path.
+      operationId: getSnippetFileRawContent
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the snippet
+        schema:
+          type: integer
+      - name: ref
+        in: path
+        required: true
+        description: The reference (branch, tag, commit) of the snippet's file
+        schema:
+          type: string
+      - name: file_path
+        in: path
+        required: true
+        description: The path of the file within the snippet
+        schema:
+          type: string
+      responses:
+        200:
+          description: Raw file content retrieved successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://gitlab.example.com/oauth/authorize
+          tokenUrl: https://gitlab.example.com/oauth/token
+          scopes: {}
+security:
+- OAuth2: []

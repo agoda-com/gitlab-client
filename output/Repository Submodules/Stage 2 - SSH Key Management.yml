@@ -1,0 +1,105 @@
+openapi: 3.0.0
+info:
+  title: GitLab SSH Key Management API
+  version: 1.0.0
+  description: API endpoints for managing SSH keys in GitLab.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/user/keys:
+    get:
+      summary: List all SSH keys for the currently authenticated user
+      operationId: listSSHKeys
+      responses:
+        200:
+          description: An array of SSH keys
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_SSHKey'
+      security:
+      - oauth2:
+        - read_user
+    post:
+      summary: Add a new SSH key to the currently authenticated user's account
+      operationId: addSSHKey
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_NewSSHKey'
+      responses:
+        201:
+          description: SSH key created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_SSHKey'
+      security:
+      - oauth2:
+        - write_user
+  /api/v4/user/keys/{key_id}:
+    delete:
+      summary: Remove an SSH key from the currently authenticated user's account
+      operationId: removeSSHKey
+      parameters:
+      - name: key_id
+        in: path
+        required: true
+        description: The ID of the SSH key to delete
+        schema:
+          type: integer
+      responses:
+        204:
+          description: SSH key deleted
+      security:
+      - oauth2:
+        - write_user
+components:
+  schemas:
+    API_Entities_SSHKey:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the SSH key
+        title:
+          type: string
+          description: The title of the SSH key
+        key:
+          type: string
+          description: The SSH key itself
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the SSH key was added
+    API_Entities_NewSSHKey:
+      type: object
+      required:
+      - title
+      - key
+      properties:
+        title:
+          type: string
+          description: A title for the new SSH key
+        key:
+          type: string
+          description: The new SSH key data
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://gitlab.example.com/oauth/authorize
+          tokenUrl: https://gitlab.example.com/oauth/token
+          scopes:
+            read_user: Read user information
+            write_user: Modify user information
+security:
+- oauth2:
+  - read_user
+  - write_user

@@ -1,0 +1,85 @@
+openapi: 3.0.0
+info:
+  title: GitLab User SSH Keys API
+  version: 1.0
+  description: API for managing user SSH keys in GitLab
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/users/{id}/keys:
+    get:
+      summary: Get SSH keys for a user
+      description: Returns a list of all SSH keys for a given user.
+      operationId: getUserSSHKeys
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the user
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of SSH keys
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_SSHKey'
+    post:
+      summary: Add an SSH key to a user
+      description: Adds a new SSH key to the specified user.
+      operationId: addUserSSHKey
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the user
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_NewSSHKey'
+      responses:
+        201:
+          description: SSH key created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_SSHKey'
+components:
+  schemas:
+    API_Entities_SSHKey:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The ID of the SSH key
+        title:
+          type: string
+          description: The title of the SSH key
+        key:
+          type: string
+          description: The SSH key itself
+        created_at:
+          type: string
+          format: date-time
+          description: The creation date of the SSH key
+    API_Entities_NewSSHKey:
+      type: object
+      required:
+      - title
+      - key
+      properties:
+        title:
+          type: string
+          description: The new SSH key's title
+        key:
+          type: string
+          description: The new SSH key data
