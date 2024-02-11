@@ -1,0 +1,60 @@
+openapi: 3.0.0
+info:
+  title: Group Member State Management API
+  version: 1.0.0
+  description: API for managing the state of members in a group on GitLab.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/groups/{id}/members/{user_id}/state:
+    put:
+      summary: Update the state of a group member
+      description: >
+        This endpoint updates the state of a member within a group.
+      operationId: updateGroupMemberState
+      tags:
+      - Group Member State Management
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the group
+        schema:
+          type: integer
+      - name: user_id
+        in: path
+        required: true
+        description: The ID of the user whose state is being updated
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                state:
+                  type: string
+                  description: The new state of the group member
+                  enum:
+                  - active
+                  - blocked
+                  - deactivated
+              required:
+              - state
+      responses:
+        200:
+          description: Member state updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      security:
+      - oauth2:
+        - write:groups
+        - read:groups

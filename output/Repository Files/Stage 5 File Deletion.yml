@@ -1,0 +1,47 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing GitLab resources.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API endpoint
+paths:
+  /api/v4/projects/{id}/repository/files/{file_path}:
+    delete:
+      summary: Delete a repository file
+      description: Deletes a file in the repository for a given project.
+      operationId: deleteRepositoryFile
+      tags:
+      - Repository
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID or URL-encoded path of the project.
+        schema:
+          type: string
+      - name: file_path
+        in: path
+        required: true
+        description: URL-encoded path of the file to delete.
+        schema:
+          type: string
+      - name: branch
+        in: query
+        required: true
+        description: The name of the branch.
+        schema:
+          type: string
+      - name: commit_message
+        in: query
+        required: true
+        description: The commit message.
+        schema:
+          type: string
+      responses:
+        204:
+          description: File deleted successfully.
+      security:
+      - oauth2:
+        - write_repository

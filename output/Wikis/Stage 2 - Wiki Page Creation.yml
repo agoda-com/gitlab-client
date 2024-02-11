@@ -1,0 +1,60 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing GitLab resources including repositories, users, and wikis.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API endpoint
+paths:
+  /api/v4/projects/{id}/wikis:
+    post:
+      summary: Create a new wiki page
+      description: This endpoint creates a new wiki page for the specified project.
+      operationId: createWikiPage
+      tags:
+      - wikis
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Wiki page creation data
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - title
+              - content
+              properties:
+                title:
+                  type: string
+                  description: The title of the wiki page
+                slug:
+                  type: string
+                  description: The slug of the wiki page. This is optional and will be generated from the title if not provided.
+                content:
+                  type: string
+                  description: The content of the wiki page in markdown format
+                format:
+                  type: string
+                  description: The format of the content (e.g., 'markdown', 'rdoc', 'asciidoc'). Defaults to 'markdown' if not provided.
+      responses:
+        201:
+          description: Wiki page created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: string
+                  slug:
+                    type: string
+                  content:
+                    type: string

@@ -1,0 +1,98 @@
+openapi: 3.0.0
+info:
+  title: GitLab API - List Reactions
+  version: 1.0
+  description: API endpoints for listing award emojis (reactions) in GitLab.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/issues/{issue_iid}/award_emoji:
+    get:
+      summary: List award emojis for an issue
+      operationId: listIssueAwardEmojis
+      tags:
+      - issues
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: issue_iid
+        in: path
+        required: true
+        description: The internal ID of the issue
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of award emojis
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_AwardEmoji'
+  /api/v4/projects/{id}/merge_requests/{merge_request_iid}/award_emoji:
+    get:
+      summary: List award emojis for a merge request
+      operationId: listMergeRequestAwardEmojis
+      tags:
+      - merge_requests
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: merge_request_iid
+        in: path
+        required: true
+        description: The internal ID of the merge request
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of award emojis
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_AwardEmoji'
+components:
+  schemas:
+    API_Entities_AwardEmoji:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the award emoji
+        name:
+          type: string
+          description: The name of the award emoji
+        user:
+          $ref: '#/components/schemas/API_Entities_User'
+      required:
+      - id
+      - name
+      - user
+    API_Entities_User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the user
+        name:
+          type: string
+          description: The name of the user
+        username:
+          type: string
+          description: The username of the user
+      required:
+      - id
+      - name
+      - username

@@ -1,0 +1,84 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for interacting with GitLab repositories.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API endpoint
+paths:
+  /api/v4/projects/{id}/repository/files/{file_path}:
+    put:
+      summary: Update an existing file in a repository
+      description: Updates an existing file in a repository of a project.
+      tags:
+      - repository
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          type: string
+      - name: file_path
+        in: path
+        required: true
+        description: URL-encoded path to the file
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                branch:
+                  type: string
+                  description: Name of the branch to commit into.
+                author_email:
+                  type: string
+                  description: Email of the author.
+                author_name:
+                  type: string
+                  description: Name of the author.
+                content:
+                  type: string
+                  description: New file content.
+                commit_message:
+                  type: string
+                  description: Commit message.
+                last_commit_id:
+                  type: string
+                  description: Last known file commit ID.
+              required:
+              - branch
+              - content
+              - commit_message
+      responses:
+        200:
+          description: File successfully updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  file_path:
+                    type: string
+                    description: The full path to the file.
+                  branch:
+                    type: string
+                    description: The branch name.
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://gitlab.example.com/oauth/authorize
+          tokenUrl: https://gitlab.example.com/oauth/token
+          scopes:
+            api: Access the authenticated user's API
+security:
+- OAuth2:
+  - api

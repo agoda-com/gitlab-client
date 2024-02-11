@@ -1,0 +1,56 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing GitLab resources including wiki attachments.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API endpoint
+paths:
+  /api/v4/projects/{id}/wikis/attachments:
+    post:
+      summary: Upload an attachment to the wiki's repository
+      description: This endpoint is used to upload an attachment to the specified project's wiki repository.
+      operationId: uploadWikiAttachment
+      tags:
+      - Wiki
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        description: Attachment file to be uploaded
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The file to upload.
+      responses:
+        201:
+          description: Attachment uploaded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  file_name:
+                    type: string
+                    description: The name of the file
+                  file_path:
+                    type: string
+                    description: A URL to access the file
+                  branch:
+                    type: string
+                    description: The name of the branch the file was uploaded to
+                  markdown:
+                    type: string
+                    description: The markdown reference for the file

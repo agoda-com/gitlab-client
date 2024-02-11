@@ -1,0 +1,74 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: GitLab API for interacting with GitLab projects and repositories.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/issues/{issue_iid}/participants:
+    get:
+      summary: Get a list of issue participants
+      description: Returns a list of users that are participating in a given issue.
+      operationId: getIssueParticipants
+      tags:
+      - issues
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          type: integer
+      - name: issue_iid
+        in: path
+        required: true
+        description: The internal ID of the project's issue
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of participants
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_User'
+      security:
+      - oauth2:
+        - read_issue
+components:
+  schemas:
+    API_Entities_User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: John Doe
+        username:
+          type: string
+          example: johndoe
+        state:
+          type: string
+          example: active
+        avatar_url:
+          type: string
+          format: uri
+          example: http://gitlab.example.com/uploads/user/avatar/1/index.jpg
+        web_url:
+          type: string
+          format: uri
+          example: http://gitlab.example.com/johndoe
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://gitlab.example.com/oauth/authorize
+          scopes:
+            read_issue: Grants read access to issues

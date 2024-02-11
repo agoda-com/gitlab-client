@@ -1,0 +1,93 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing GitLab projects, milestones, issues, and merge requests.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/milestones/{milestone_id}/issues:
+    get:
+      summary: Get issues for a project milestone
+      description: Returns a list of project milestone issues.
+      operationId: getMilestoneIssues
+      tags:
+      - milestones
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: integer
+      - name: milestone_id
+        in: path
+        description: The ID of the project milestone
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of issues
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_Issue'
+  /api/v4/projects/{id}/milestones/{milestone_id}/merge_requests:
+    get:
+      summary: Get merge requests for a project milestone
+      description: Returns a list of project milestone merge requests.
+      operationId: getMilestoneMergeRequests
+      tags:
+      - milestones
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: integer
+      - name: milestone_id
+        in: path
+        description: The ID of the project milestone
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of merge requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_MergeRequest'
+components:
+  schemas:
+    API_Entities_Issue:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the issue
+        title:
+          type: string
+          description: The title of the issue
+        state:
+          type: string
+          description: The state of the issue
+    API_Entities_MergeRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the merge request
+        title:
+          type: string
+          description: The title of the merge request
+        state:
+          type: string
+          description: The state of the merge request

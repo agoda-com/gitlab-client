@@ -1,0 +1,71 @@
+openapi: 3.0.0
+info:
+  title: License Management API
+  version: 1.0.0
+  description: API for managing licenses in the system.
+servers:
+- url: https://api.yourdomain.com/v1
+  description: Production server
+paths:
+  /api/v4/license:
+    post:
+      summary: Create a new license
+      description: This endpoint creates a new license.
+      operationId: createLicense
+      tags:
+      - License Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - licenseName
+              - licenseKey
+              properties:
+                licenseName:
+                  type: string
+                  description: Name of the license.
+                licenseKey:
+                  type: string
+                  description: Unique license key.
+      responses:
+        201:
+          description: License created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Unique identifier of the created license.
+                  message:
+                    type: string
+                    description: A message confirming the successful creation of the license.
+  /api/v4/license/{id}:
+    delete:
+      summary: Delete a license
+      description: This endpoint deletes a license by its ID.
+      operationId: deleteLicense
+      tags:
+      - License Management
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Unique identifier of the license to delete.
+        schema:
+          type: string
+      responses:
+        200:
+          description: License deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message confirming the successful deletion of the license.

@@ -1,0 +1,110 @@
+openapi: 3.0.0
+info:
+  title: GitLab Boards API
+  version: 1.0
+  description: API for interacting with GitLab project boards
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/boards:
+    get:
+      summary: Get a list of project boards
+      description: Returns a list of boards in a project.
+      operationId: getProjectBoards
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of boards
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_Board'
+    post:
+      summary: Create a new project board
+      description: Creates a new board within the project.
+      operationId: createProjectBoard
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_NewBoard'
+      responses:
+        201:
+          description: Board created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Board'
+components:
+  schemas:
+    API_Entities_Board:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the board
+        name:
+          type: string
+          description: The name of the board
+        project_id:
+          type: integer
+          description: The ID of the project the board belongs to
+        milestone_id:
+          type: integer
+          description: The ID of the milestone the board is associated with
+        labels:
+          type: array
+          items:
+            type: string
+          description: List of labels associated with the board
+        weight:
+          type: integer
+          description: The weight of the board
+        assignee:
+          $ref: '#/components/schemas/API_Entities_User'
+    API_Entities_NewBoard:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: The name of the new board
+    API_Entities_User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the user
+        username:
+          type: string
+          description: The username of the user
+        name:
+          type: string
+          description: The name of the user
+        state:
+          type: string
+          description: The state of the user
+        avatar_url:
+          type: string
+          description: The URL of the user's avatar
+        web_url:
+          type: string
+          description: The URL of the user's GitLab profile

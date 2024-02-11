@@ -1,0 +1,81 @@
+openapi: 3.0.0
+info:
+  title: GitLab Advanced Group Search API
+  version: 1.0
+  description: API for searching within a GitLab group across various scopes.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/groups/{id}/search:
+    get:
+      summary: Search within a group
+      description: >
+        Allows searching for content within a group across specified scopes.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the group to search within.
+        schema:
+          type: integer
+      - name: scope
+        in: query
+        required: true
+        description: The scope of the search. Can be blobs, commits, notes, or wiki_blobs.
+        schema:
+          type: string
+          enum:
+          - blobs
+          - commits
+          - notes
+          - wiki_blobs
+      - name: search
+        in: query
+        required: true
+        description: The search query string.
+        schema:
+          type: string
+      responses:
+        200:
+          description: Search results returned successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_results:
+                    type: integer
+                    description: The total number of search results.
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        title:
+                          type: string
+                        snippet:
+                          type: string
+                        filename:
+                          type: string
+                        ref:
+                          type: string
+                        startline:
+                          type: integer
+                        data:
+                          type: string
+      security:
+      - oauth2:
+        - read_group
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://gitlab.example.com/oauth/authorize
+          tokenUrl: https://gitlab.example.com/oauth/token
+          scopes:
+            read_group: Read access to group details and search within a group

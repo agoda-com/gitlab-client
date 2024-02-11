@@ -1,0 +1,104 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing GitLab resources including groups, users, and projects.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/groups/{id}/audit_events:
+    get:
+      summary: Get a list of audit events for a specified group
+      description: Returns a list of audit events for the group identified by the ID.
+      operationId: getGroupAuditEvents
+      tags:
+      - groups
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the group
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: An array of audit events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_AuditEvent'
+      security:
+      - oauth2:
+        - read_group
+  /api/v4/groups/{id}/audit_events/{audit_event_id}:
+    get:
+      summary: Get a single audit event for a specified group
+      description: Returns a single audit event for the group identified by the ID and the audit event ID.
+      operationId: getGroupAuditEventById
+      tags:
+      - groups
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the group
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: audit_event_id
+        in: path
+        description: The ID of the audit event
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: An audit event object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_AuditEvent'
+      security:
+      - oauth2:
+        - read_group
+components:
+  schemas:
+    API_Entities_AuditEvent:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The ID of the audit event
+        details:
+          type: object
+          description: Detailed information about the audit event
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the audit event was created
+        author_id:
+          type: integer
+          format: int64
+          description: The ID of the user who triggered the audit event
+        entity_id:
+          type: integer
+          format: int64
+          description: The ID of the entity that the event is associated with
+        entity_type:
+          type: string
+          description: The type of the entity (e.g., Group, Project, User)
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://gitlab.example.com/oauth/authorize
+          tokenUrl: https://gitlab.example.com/oauth/token
+          scopes:
+            read_group: read access to group information

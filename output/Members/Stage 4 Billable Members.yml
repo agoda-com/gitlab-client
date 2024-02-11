@@ -1,0 +1,124 @@
+openapi: 3.0.0
+info:
+  title: GitLab Billable Members API
+  version: 1.0
+  description: API endpoints for managing billable members in GitLab groups
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/groups/{id}/billable_members:
+    get:
+      summary: Get a list of billable members for a group
+      description: Retrieve a list of users who are considered billable members within a specified group.
+      operationId: getBillableMembers
+      tags:
+      - Billable Members
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the group
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: A list of billable members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_BillableMember'
+  /api/v4/groups/{id}/billable_members/{user_id}/memberships:
+    get:
+      summary: Get billable memberships for a specific user in a group
+      description: Retrieve the billable memberships of a specific user within a specified group.
+      operationId: getBillableMemberships
+      tags:
+      - Billable Members
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the group
+        required: true
+        schema:
+          type: integer
+      - name: user_id
+        in: path
+        description: The ID of the user
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: A list of billable memberships for the user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_BillableMembership'
+  /api/v4/groups/{id}/billable_members/{user_id}:
+    delete:
+      summary: Remove a user from the list of billable members in a group
+      description: Delete a user from the list of billable members for a specified group.
+      operationId: deleteBillableMember
+      tags:
+      - Billable Members
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the group
+        required: true
+        schema:
+          type: integer
+      - name: user_id
+        in: path
+        description: The ID of the user to remove
+        required: true
+        schema:
+          type: integer
+      responses:
+        204:
+          description: User removed successfully
+components:
+  schemas:
+    API_Entities_BillableMember:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the user
+        username:
+          type: string
+          description: The username of the user
+        name:
+          type: string
+          description: The name of the user
+        state:
+          type: string
+          description: The state of the user's membership
+        avatar_url:
+          type: string
+          description: The URL of the user's avatar
+        web_url:
+          type: string
+          description: The URL of the user's profile
+    API_Entities_BillableMembership:
+      type: object
+      properties:
+        group_id:
+          type: integer
+          description: The ID of the group
+        user_id:
+          type: integer
+          description: The ID of the user
+        starts_at:
+          type: string
+          format: date
+          description: The start date of the membership
+        expires_at:
+          type: string
+          format: date
+          description: The expiration date of the membership

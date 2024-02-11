@@ -1,0 +1,98 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: GitLab API for interacting with GitLab resources.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/protected_branches/{name}:
+    patch:
+      summary: Update a protected branch
+      description: Updates an existing protected branch or wildcard protected branch.
+      operationId: updateProtectedBranch
+      tags:
+      - Protected Branches
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: string
+      - name: name
+        in: path
+        description: The name of the protected branch
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Protected branch update parameters
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                push_access_level:
+                  type: integer
+                  description: Access levels allowed to push (0 for no access, 30 for developers + maintainers, 40 for maintainers, 60 for admins)
+                merge_access_level:
+                  type: integer
+                  description: Access levels allowed to merge (0 for no access, 30 for developers + maintainers, 40 for maintainers, 60 for admins)
+                unprotect_access_level:
+                  type: integer
+                  description: Access levels allowed to unprotect (40 for maintainers, 60 for admins)
+                allow_force_push:
+                  type: boolean
+                  description: Allow force pushing for the protected branch
+                code_owner_approval_required:
+                  type: boolean
+                  description: Set to `true` if code owner approval is required
+              required:
+              - push_access_level
+              - merge_access_level
+              - unprotect_access_level
+      responses:
+        200:
+          description: Protected branch successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_ProtectedBranch'
+components:
+  schemas:
+    API_Entities_ProtectedBranch:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the protected branch
+        name:
+          type: string
+          description: The name of the protected branch
+        push_access_levels:
+          type: array
+          items:
+            $ref: '#/components/schemas/API_Entities_AccessLevel'
+        merge_access_levels:
+          type: array
+          items:
+            $ref: '#/components/schemas/API_Entities_AccessLevel'
+        unprotect_access_levels:
+          type: array
+          items:
+            $ref: '#/components/schemas/API_Entities_AccessLevel'
+        code_owner_approval_required:
+          type: boolean
+          description: Indicates if code owner approval is required
+    API_Entities_AccessLevel:
+      type: object
+      properties:
+        access_level:
+          type: integer
+          description: The access level
+        access_level_description:
+          type: string
+          description: The description of the access level

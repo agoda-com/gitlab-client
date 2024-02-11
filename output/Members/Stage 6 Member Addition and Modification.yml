@@ -1,0 +1,151 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing members in GitLab groups and projects
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/groups/{id}/members:
+    post:
+      summary: Add a member to a group
+      description: Adds a user to a group as a member.
+      operationId: addGroupMember
+      tags:
+      - groups
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the group
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  description: The ID of the user to add to the group
+                access_level:
+                  type: integer
+                  description: The access level of the member within the group
+                expires_at:
+                  type: string
+                  format: date
+                  description: The expiration date for the membership
+      responses:
+        201:
+          description: Member added successfully
+  /api/v4/projects/{id}/members:
+    post:
+      summary: Add a member to a project
+      description: Adds a user to a project as a member.
+      operationId: addProjectMember
+      tags:
+      - projects
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  description: The ID of the user to add to the project
+                access_level:
+                  type: integer
+                  description: The access level of the member within the project
+                expires_at:
+                  type: string
+                  format: date
+                  description: The expiration date for the membership
+      responses:
+        201:
+          description: Member added successfully
+  /api/v4/groups/{id}/members/{user_id}:
+    put:
+      summary: Modify a group member's details
+      description: Updates a user's membership details in a group.
+      operationId: updateGroupMember
+      tags:
+      - groups
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the group
+        schema:
+          type: integer
+      - name: user_id
+        in: path
+        required: true
+        description: The ID of the user whose membership details are being updated
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                access_level:
+                  type: integer
+                  description: The new access level of the member within the group
+                expires_at:
+                  type: string
+                  format: date
+                  description: The new expiration date for the membership
+      responses:
+        200:
+          description: Member updated successfully
+  /api/v4/projects/{id}/members/{user_id}:
+    put:
+      summary: Modify a project member's details
+      description: Updates a user's membership details in a project.
+      operationId: updateProjectMember
+      tags:
+      - projects
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: user_id
+        in: path
+        required: true
+        description: The ID of the user whose membership details are being updated
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                access_level:
+                  type: integer
+                  description: The new access level of the member within the project
+                expires_at:
+                  type: string
+                  format: date
+                  description: The new expiration date for the membership
+      responses:
+        200:
+          description: Member updated successfully

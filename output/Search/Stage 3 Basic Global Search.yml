@@ -1,0 +1,78 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: The GitLab API for Basic Global Search
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/search:
+    get:
+      summary: Global Search across various scopes
+      description: >
+        Allows searching for projects, issues, merge requests, milestones, snippet titles, and users.
+      operationId: getGlobalSearchResults
+      parameters:
+      - name: scope
+        in: query
+        description: The scope of the search.
+        required: true
+        schema:
+          type: string
+          enum:
+          - projects
+          - issues
+          - merge_requests
+          - milestones
+          - snippet_titles
+          - users
+        example: projects
+      - name: search
+        in: query
+        description: The search query string.
+        required: true
+        schema:
+          type: string
+        example: gitlab
+      - name: per_page
+        in: query
+        description: Number of items to list per page.
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 20
+        example: 10
+      - name: page
+        in: query
+        description: The page number to paginate through the list.
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 1
+        example: 2
+      responses:
+        200:
+          description: Search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: true
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://gitlab.example.com/oauth/authorize
+          tokenUrl: https://gitlab.example.com/oauth/token
+          scopes:
+            read_api: Grants read access to the API
+security:
+- OAuth2:
+  - read_api

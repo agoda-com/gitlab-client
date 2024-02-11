@@ -1,0 +1,189 @@
+openapi: 3.0.0
+info:
+  title: GitLab API - Single Milestone Operations
+  version: 1.0
+  description: API endpoints for managing single milestones in a project on GitLab.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/milestones/{milestone_id}:
+    get:
+      summary: Get a single project milestone
+      description: Get detailed information about a single milestone of a project.
+      operationId: getProjectMilestone
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+      - name: milestone_id
+        in: path
+        description: The ID of the milestone
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Successful response with the milestone details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Milestone'
+    put:
+      summary: Update a project milestone
+      description: Updates an existing project milestone.
+      operationId: updateProjectMilestone
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+      - name: milestone_id
+        in: path
+        description: The ID of the milestone
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Milestone update payload
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_MilestoneUpdate'
+      responses:
+        200:
+          description: Milestone successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Milestone'
+    delete:
+      summary: Delete a project milestone
+      description: Deletes a project milestone.
+      operationId: deleteProjectMilestone
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+      - name: milestone_id
+        in: path
+        description: The ID of the milestone
+        required: true
+        schema:
+          type: integer
+      responses:
+        204:
+          description: Milestone successfully deleted.
+  /api/v4/projects/{id}/milestones:
+    post:
+      summary: Create a new project milestone
+      description: Creates a new milestone for the project.
+      operationId: createProjectMilestone
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Milestone creation payload
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_MilestoneCreate'
+      responses:
+        201:
+          description: Milestone successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Milestone'
+components:
+  schemas:
+    API_Entities_Milestone:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the milestone
+        iid:
+          type: integer
+          description: The internal ID of the milestone within the project
+        project_id:
+          type: integer
+          description: The ID of the project
+        title:
+          type: string
+          description: The title of the milestone
+        description:
+          type: string
+          description: The description of the milestone
+        state:
+          type: string
+          description: The state of the milestone (active, closed)
+        due_date:
+          type: string
+          format: date
+          description: The due date of the milestone
+        start_date:
+          type: string
+          format: date
+          description: The start date of the milestone
+        created_at:
+          type: string
+          format: date-time
+          description: The creation date of the milestone
+        updated_at:
+          type: string
+          format: date-time
+          description: The last update date of the milestone
+    API_Entities_MilestoneCreate:
+      type: object
+      required:
+      - title
+      properties:
+        title:
+          type: string
+          description: The title of the milestone
+        description:
+          type: string
+          description: The description of the milestone
+        due_date:
+          type: string
+          format: date
+          description: The due date of the milestone
+        start_date:
+          type: string
+          format: date
+          description: The start date of the milestone
+    API_Entities_MilestoneUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          description: The title of the milestone
+        description:
+          type: string
+          description: The description of the milestone
+        due_date:
+          type: string
+          format: date
+          description: The due date of the milestone
+        start_date:
+          type: string
+          format: date
+          description: The start date of the milestone
+        state_event:
+          type: string
+          description: The new state of the milestone (close, activate)

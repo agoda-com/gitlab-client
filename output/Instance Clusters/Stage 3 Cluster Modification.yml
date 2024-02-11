@@ -1,0 +1,82 @@
+openapi: 3.0.0
+info:
+  title: GitLab Cluster Management API
+  version: 1.0.0
+  description: API for managing clusters in GitLab
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/admin/clusters/{cluster_id}:
+    put:
+      tags:
+      - Cluster Management
+      summary: Update a cluster
+      description: This endpoint updates the specified cluster's information.
+      operationId: updateCluster
+      parameters:
+      - name: cluster_id
+        in: path
+        required: true
+        description: The ID of the cluster to update.
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_ClusterUpdateRequest'
+      responses:
+        200:
+          description: Cluster updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Cluster'
+components:
+  schemas:
+    API_Entities_Cluster:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        status:
+          type: string
+          enum:
+          - creating
+          - running
+          - updating
+          - deleting
+          - errored
+        kube_api_url:
+          type: string
+          format: uri
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - name
+      - status
+      - kube_api_url
+      - created_at
+      - updated_at
+    API_Entities_ClusterUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        kube_api_url:
+          type: string
+          format: uri
+      required:
+      - name
+      - kube_api_url

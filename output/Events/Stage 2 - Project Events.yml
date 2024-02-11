@@ -1,0 +1,77 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{project_id}/events:
+    get:
+      summary: Get a list of visible events for a particular project
+      description: Retrieves a list of events for a specified project that are visible to the authenticated user.
+      operationId: getProjectEvents
+      tags:
+      - Project Events
+      parameters:
+      - name: project_id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: page
+        in: query
+        description: Page number for pagination
+        required: false
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        description: Number of items to list per page
+        required: false
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_Event'
+components:
+  schemas:
+    API_Entities_Event:
+      type: object
+      properties:
+        title:
+          type: string
+        project_id:
+          type: integer
+          format: int64
+        action_name:
+          type: string
+        target_type:
+          type: string
+        target_id:
+          type: integer
+          format: int64
+        author_id:
+          type: integer
+          format: int64
+        author_username:
+          type: string
+        data:
+          type: object
+          additionalProperties: true
+        target_title:
+          type: string
+      required:
+      - title
+      - project_id
+      - action_name
+      - author_id
+      - author_username

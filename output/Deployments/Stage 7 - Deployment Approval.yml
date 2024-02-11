@@ -1,0 +1,67 @@
+openapi: 3.0.0
+info:
+  title: GitLab Deployment Approval API
+  version: 1.0.0
+  description: API for managing deployment approvals in GitLab
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/deployments/{deployment_id}/approval:
+    post:
+      summary: Approve a deployment
+      description: Approves a pending deployment for a given project and deployment ID.
+      operationId: approveDeployment
+      tags:
+      - Deployments
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: deployment_id
+        in: path
+        required: true
+        description: The ID of the deployment to approve
+        schema:
+          type: integer
+      requestBody:
+        description: Optional additional data for the approval
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  description: Reason for approving the deployment
+      responses:
+        200:
+          description: Deployment approved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: approved
+                  message:
+                    type: string
+                    example: Deployment has been approved
+      security:
+      - oauth2:
+        - write_deployments
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://gitlab.example.com/oauth/authorize
+          tokenUrl: https://gitlab.example.com/oauth/token
+          scopes:
+            write_deployments: Grants write access to deployments

@@ -1,0 +1,112 @@
+openapi: 3.0.0
+info:
+  title: GitLab Snippet Management API
+  version: 1.0
+  description: API for managing snippets in GitLab
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API Endpoint
+paths:
+  /api/v4/snippets/{id}:
+    put:
+      summary: Update a snippet
+      description: Updates an existing snippet by its ID.
+      operationId: updateSnippet
+      tags:
+      - snippets
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the snippet to update.
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                file_name:
+                  type: string
+                code:
+                  type: string
+                visibility:
+                  type: string
+                  enum:
+                  - private
+                  - internal
+                  - public
+              required:
+              - title
+              - file_name
+              - code
+              - visibility
+      responses:
+        200:
+          description: Snippet successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Snippet'
+    delete:
+      summary: Delete a snippet
+      description: Deletes an existing snippet by its ID.
+      operationId: deleteSnippet
+      tags:
+      - snippets
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the snippet to delete.
+        schema:
+          type: integer
+      responses:
+        204:
+          description: Snippet successfully deleted (no content).
+components:
+  schemas:
+    API_Entities_Snippet:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        file_name:
+          type: string
+        code:
+          type: string
+        visibility:
+          type: string
+          enum:
+          - private
+          - internal
+          - public
+        author:
+          $ref: '#/components/schemas/API_Entities_User'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    API_Entities_User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        name:
+          type: string
+        state:
+          type: string
+        avatar_url:
+          type: string
+        web_url:
+          type: string

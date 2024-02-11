@@ -1,0 +1,30 @@
+openapi: 3.0.0
+info:
+  title: GitLab System Hooks API
+  version: 1.0
+  description: API for managing GitLab system hooks
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/hooks/{id}:
+    delete:
+      summary: Removes a system hook
+      description: Deletes a system hook by its ID.
+      operationId: deleteSystemHook
+      tags:
+      - System Hooks
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the system hook to delete
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        204:
+          description: No Content - Hook successfully deleted
+      security:
+      - oauth2:
+        - admin:hooks

@@ -1,0 +1,93 @@
+openapi: 3.0.0
+info:
+  title: GitLab Group Epics API
+  version: 1.0
+  description: API for managing group epics in GitLab
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/groups/{id}/epics:
+    get:
+      summary: Retrieves all epics of the requested group and its subgroups
+      description: >
+        This endpoint retrieves all epics of the requested group and its subgroups.
+
+        It supports various filters to refine the results.
+      operationId: getGroupEpics
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the group
+        required: true
+        schema:
+          type: string
+      - name: author_id
+        in: query
+        description: Return epics created by the given user id
+        required: false
+        schema:
+          type: integer
+      - name: labels
+        in: query
+        description: Comma-separated list of label names to filter by
+        required: false
+        schema:
+          type: string
+      - name: state
+        in: query
+        description: Return epics with the given state (opened, closed, all)
+        required: false
+        schema:
+          type: string
+          enum:
+          - opened
+          - closed
+          - all
+      responses:
+        200:
+          description: An array of epics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_Epic'
+components:
+  schemas:
+    API_Entities_Epic:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The ID of the epic
+        title:
+          type: string
+          description: The title of the epic
+        description:
+          type: string
+          description: The description of the epic
+        state:
+          type: string
+          description: The state of the epic (opened, closed)
+        author:
+          $ref: '#/components/schemas/API_Entities_User'
+        labels:
+          type: array
+          items:
+            type: string
+          description: Labels assigned to the epic
+    API_Entities_User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The ID of the user
+        name:
+          type: string
+          description: The name of the user
+        username:
+          type: string
+          description: The username of the user

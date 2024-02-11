@@ -1,0 +1,72 @@
+openapi: 3.0.0
+info:
+  title: GitLab Submodule API
+  version: 1.0
+  description: API for managing submodule references in a GitLab repository
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/repository/submodules/{submodule}:
+    put:
+      summary: Update a submodule reference
+      description: Updates an existing submodule reference within a repository.
+      tags:
+      - submodules
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          type: string
+      - name: submodule
+        in: path
+        required: true
+        description: The name of the submodule
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                branch:
+                  type: string
+                  description: The name of the branch or commit SHA to update the submodule to
+                commit_sha:
+                  type: string
+                  description: The commit SHA that the submodule will be updated to
+                commit_message:
+                  type: string
+                  description: The commit message for updating the submodule
+              required:
+              - branch
+              - commit_sha
+              - commit_message
+      responses:
+        200:
+          description: Submodule reference updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Submodule reference updated successfully
+      security:
+      - oauth2:
+        - write_repository
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://gitlab.example.com/oauth/authorize
+          tokenUrl: https://gitlab.example.com/oauth/token
+          scopes:
+            write_repository: Grants write access to repository

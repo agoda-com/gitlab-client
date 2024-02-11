@@ -1,0 +1,106 @@
+openapi: 3.0.0
+info:
+  title: GitLab API Security Enhancements
+  version: 1.0
+  description: API endpoints for enhanced security features in token management.
+servers:
+- url: https://gitlab.example.com/api/v4
+paths:
+  /api/v4/tokens:
+    post:
+      summary: Create a new token with security enhancements
+      description: >
+        This endpoint creates a new token with automatic reuse detection and other security features.
+      operationId: createToken
+      tags:
+      - Tokens
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the token.
+                expires_at:
+                  type: string
+                  format: date-time
+                  description: The expiration date and time for the token.
+                scopes:
+                  type: array
+                  items:
+                    type: string
+                  description: The scopes assigned to the token.
+                reuse_detection:
+                  type: boolean
+                  default: true
+                  description: Enable automatic reuse detection for the token.
+      responses:
+        201:
+          description: Token created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_TokenResponse'
+  /api/v4/tokens/{token_id}/rotate:
+    post:
+      summary: Rotate an existing token with security enhancements
+      description: >
+        This endpoint rotates an existing token, issuing a new one with the same permissions but different token value.
+      operationId: rotateToken
+      tags:
+      - Tokens
+      parameters:
+      - name: token_id
+        in: path
+        required: true
+        description: The ID of the token to rotate.
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reuse_detection:
+                  type: boolean
+                  default: true
+                  description: Enable automatic reuse detection for the new token.
+      responses:
+        200:
+          description: Token rotated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_TokenResponse'
+components:
+  schemas:
+    API_Entities_TokenResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: The new token value.
+        expires_at:
+          type: string
+          format: date-time
+          description: The expiration date and time for the token.
+        scopes:
+          type: array
+          items:
+            type: string
+          description: The scopes assigned to the token.
+        reuse_detected:
+          type: boolean
+          description: Indicates if reuse was detected for the token.
+security:
+- BearerAuth: []
+securitySchemes:
+  BearerAuth:
+    type: http
+    scheme: bearer
+    bearerFormat: JWT

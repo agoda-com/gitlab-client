@@ -1,0 +1,77 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing GitLab resources.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API endpoint
+paths:
+  /api/v4/projects/{id}/labels:
+    post:
+      summary: Create a new label
+      description: Creates a new label for the given project.
+      operationId: createProjectLabel
+      tags:
+      - labels
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Label creation request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              - color
+              properties:
+                name:
+                  type: string
+                  description: The name of the label
+                color:
+                  type: string
+                  description: The color of the label in 6-character hex notation with a leading '#' (e.g., '#F0A1B2')
+                description:
+                  type: string
+                  description: The description of the label
+                  nullable: true
+                priority:
+                  type: integer
+                  description: The priority of the label
+                  nullable: true
+      responses:
+        201:
+          description: Label created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Label'
+components:
+  schemas:
+    API_Entities_Label:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The ID of the label
+        name:
+          type: string
+          description: The name of the label
+        color:
+          type: string
+          description: The color of the label
+        description:
+          type: string
+          description: The description of the label
+        priority:
+          type: integer
+          description: The priority of the label
+          nullable: true

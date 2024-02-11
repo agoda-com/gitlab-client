@@ -1,0 +1,120 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing GitLab resources including pipeline schedules.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/pipeline_schedules/{pipeline_schedule_id}:
+    put:
+      summary: Update a pipeline schedule
+      description: Updates an existing pipeline schedule for a project.
+      operationId: updatePipelineSchedule
+      tags:
+      - pipeline schedules
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          type: integer
+      - name: pipeline_schedule_id
+        in: path
+        required: true
+        description: The ID of the pipeline schedule
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                  description: The description of the pipeline schedule
+                ref:
+                  type: string
+                  description: The branch/tag name to be triggered
+                cron:
+                  type: string
+                  description: The cron pattern for scheduling
+                cron_timezone:
+                  type: string
+                  description: The timezone for the cron pattern
+                active:
+                  type: boolean
+                  description: Whether the pipeline schedule is active
+      responses:
+        200:
+          description: Pipeline schedule updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_PipelineSchedule'
+  /api/v4/projects/{id}/pipeline_schedules/{pipeline_schedule_id}/play:
+    post:
+      summary: Play a pipeline schedule
+      description: Triggers a pipeline schedule immediately.
+      operationId: playPipelineSchedule
+      tags:
+      - pipeline schedules
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          type: integer
+      - name: pipeline_schedule_id
+        in: path
+        required: true
+        description: The ID of the pipeline schedule
+        schema:
+          type: integer
+      responses:
+        201:
+          description: Pipeline schedule played successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_PipelineSchedule'
+components:
+  schemas:
+    API_Entities_PipelineSchedule:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the pipeline schedule
+        description:
+          type: string
+          description: The description of the pipeline schedule
+        ref:
+          type: string
+          description: The branch/tag name to be triggered
+        cron:
+          type: string
+          description: The cron pattern for scheduling
+        cron_timezone:
+          type: string
+          description: The timezone for the cron pattern
+        next_run_at:
+          type: string
+          format: date-time
+          description: The next scheduled run time
+        active:
+          type: boolean
+          description: Whether the pipeline schedule is active
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time of creation
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time of the last update

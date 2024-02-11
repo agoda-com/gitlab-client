@@ -1,0 +1,84 @@
+openapi: 3.0.0
+info:
+  title: GitLab Advanced Global Search API
+  version: 1.0
+  description: API endpoints for advanced global search across various scopes in GitLab.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/search:
+    get:
+      summary: Search across various scopes
+      description: >
+        Allows searching for content across multiple scopes including blobs, commits, notes, and wiki_blobs.
+      parameters:
+      - name: scope
+        in: query
+        description: The scope of the search. Possible values are blobs, commits, notes, wiki_blobs.
+        required: true
+        schema:
+          type: string
+          enum:
+          - blobs
+          - commits
+          - notes
+          - wiki_blobs
+      - name: search
+        in: query
+        description: The search query string.
+        required: true
+        schema:
+          type: string
+      - name: project_id
+        in: query
+        description: The ID of the project to search within.
+        required: false
+        schema:
+          type: integer
+      - name: repository_ref
+        in: query
+        description: The name of the repository branch or tag to search within.
+        required: false
+        schema:
+          type: string
+      - name: snippet_blob
+        in: query
+        description: Whether to search within snippet blobs. Default is false.
+        required: false
+        schema:
+          type: boolean
+          default: false
+      responses:
+        200:
+          description: Search results returned successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    title:
+                      type: string
+                    content:
+                      type: string
+                    ref:
+                      type: string
+                    filename:
+                      type: string
+                    startline:
+                      type: integer
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://gitlab.example.com/oauth/authorize
+          tokenUrl: https://gitlab.example.com/oauth/token
+          scopes: {}
+security:
+- OAuth2: []

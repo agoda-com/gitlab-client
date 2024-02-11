@@ -1,0 +1,61 @@
+openapi: 3.0.0
+info:
+  title: License Utilization API
+  version: 1.0.0
+  description: API for managing license utilization in GitLab
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/license/{id}/refresh_billable_users:
+    put:
+      summary: Refresh the count of billable users for a given license
+      operationId: refreshBillableUsers
+      tags:
+      - License Utilization
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the license to refresh
+        schema:
+          type: string
+      responses:
+        200:
+          description: Successfully refreshed the billable users count
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Billable users count refreshed successfully.
+      security:
+      - BearerAuth: []
+  /api/v4/license/usage_export.csv:
+    get:
+      summary: Export license usage data as a CSV file
+      operationId: exportLicenseUsage
+      tags:
+      - License Utilization
+      responses:
+        200:
+          description: Successfully retrieved the license usage data
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+                example: >-
+                  user_id,username,email,license_id,license_start_date,license_end_date
+
+                  1,jdoe,jdoe@example.com,123,2024-01-01,2024-12-31
+      security:
+      - BearerAuth: []
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

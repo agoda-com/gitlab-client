@@ -1,0 +1,63 @@
+openapi: 3.0.0
+info:
+  title: GitLab Project Merge Trains API
+  version: 1.0
+  description: API endpoints for managing project merge trains in GitLab
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/merge_trains:
+    get:
+      summary: Get merge trains for a project
+      description: Retrieve a list of merge trains for a specified project.
+      operationId: getProjectMergeTrains
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: scope
+        in: query
+        required: false
+        description: Scope of the merge trains to return (e.g., 'complete')
+        schema:
+          type: string
+          enum:
+          - complete
+          - active
+          - paused
+          - canceled
+      responses:
+        200:
+          description: An array of merge trains
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_MergeTrain'
+components:
+  schemas:
+    API_Entities_MergeTrain:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the merge train
+        status:
+          type: string
+          description: The current status of the merge train
+        created_at:
+          type: string
+          format: date-time
+          description: The time at which the merge train was created
+        updated_at:
+          type: string
+          format: date-time
+          description: The time at which the merge train was last updated
+security:
+- oauth2:
+  - read_api

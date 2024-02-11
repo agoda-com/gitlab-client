@@ -1,0 +1,92 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for interacting with GitLab resources.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/issues/{issue_iid}/related_merge_requests:
+    get:
+      summary: Get related merge requests for an issue
+      description: Returns a list of merge requests that are related to the issue.
+      operationId: getRelatedMergeRequests
+      tags:
+      - issues
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: issue_iid
+        in: path
+        required: true
+        description: The internal ID of the issue within the project
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of related merge requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_MergeRequest'
+  /api/v4/projects/{id}/issues/{issue_iid}/closed_by:
+    get:
+      summary: Get merge requests that close an issue
+      description: Returns a list of merge requests that, when merged, will close the issue.
+      operationId: getMergeRequestsClosingIssue
+      tags:
+      - issues
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: issue_iid
+        in: path
+        required: true
+        description: The internal ID of the issue within the project
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of merge requests that close the issue
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_MergeRequest'
+components:
+  schemas:
+    API_Entities_MergeRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the merge request
+        iid:
+          type: integer
+          description: The internal ID of the merge request within the project
+        title:
+          type: string
+          description: The title of the merge request
+        state:
+          type: string
+          description: The state of the merge request
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the merge request was created
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time when the merge request was last updated

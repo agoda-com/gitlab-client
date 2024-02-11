@@ -1,0 +1,147 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: '4.0'
+servers:
+  - url: https://gitlab.example.com/api/v4
+    description: GitLab API base URL
+
+paths:
+  /projects/{id}/deployments:
+    post:
+      summary: Create a new deployment in a project
+      description: This endpoint creates a new deployment for a project.
+      operationId: createProjectDeployment
+      tags:
+        - Deployments
+      parameters:
+        - name: id
+          in: path
+          description: The ID or URL-encoded path of the project
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - environment
+                - sha
+                - ref
+                - status
+              properties:
+                environment:
+                  type: string
+                  description: The name of the environment to deploy to
+                sha:
+                  type: string
+                  description: The SHA of the commit to be deployed
+                ref:
+                  type: string
+                  description: The reference to deploy from
+                status:
+                  type: string
+                  description: The status of the deployment (e.g., running, success, failed)
+                tag:
+                  type: boolean
+                  description: Whether or not the deployment is created from a tag (default: false)
+                description:
+                  type: string
+                  description: A description of the deployment
+      responses:
+        '201':
+          description: Deployment created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deployment'
+        '400':
+          description: Bad request (invalid input, missing required fields, etc.)
+        '401':
+          description: Unauthorized (invalid or missing authentication credentials)
+        '403':
+          description: Forbidden (the user does not have permission to create a deployment)
+        '404':
+          description: Not found (the specified project does not exist)
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    Deployment:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the deployment
+        iid:
+          type: integer
+          description: The internal ID of the deployment within the project
+        project_id:
+          type: integer
+          description: The ID of the project
+        ref:
+          type: string
+          description: The reference from which the deployment is created
+        sha:
+          type: string
+          description: The SHA of the commit that was deployed
+        user:
+          $ref: '#/components/schemas/User'
+        environment:
+          $ref: '#/components/schemas/Environment'
+        status:
+          type: string
+          description: The status of the deployment
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the deployment was created
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time when the deployment was last updated
+        # Define other properties as needed
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the user
+        name:
+          type: string
+          description: The name of the user
+        username:
+          type: string
+          description: The username of the user
+        state:
+          type: string
+          description: The state of the user (active, blocked, etc.)
+        avatar_url:
+          type: string
+          description: The URL of the user's avatar
+        web_url:
+          type: string
+          description: The URL of the user's GitLab profile
+        # Define other properties as needed
+
+    Environment:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the environment
+        name:
+          type: string
+          description: The name of the environment
+        slug:
+          type: string
+          description: The slug of the environment
+        external_url:
+          type: string
+          description: The external URL of the environment
+        # Define other properties as needed

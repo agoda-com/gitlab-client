@@ -1,0 +1,147 @@
+openapi: 3.0.0
+info:
+  title: GitLab API - User Operations
+  description: API for managing users in GitLab
+  version: 1.0.0
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/users:
+    post:
+      summary: Create a new user
+      description: Create a new user with the provided details.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_NewUser'
+      responses:
+        201:
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_User'
+  /api/v4/users/{id}:
+    get:
+      summary: Get a single user
+      description: Retrieve a single user by their ID.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the user to retrieve
+        schema:
+          type: integer
+      responses:
+        200:
+          description: A single user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_User'
+components:
+  schemas:
+    API_Entities_User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        username:
+          type: string
+          example: john_doe
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          format: email
+          example: john.doe@example.com
+        state:
+          type: string
+          example: active
+        avatar_url:
+          type: string
+          format: uri
+          example: http://gitlab.example.com/uploads/user/avatar/1/index.jpg
+        web_url:
+          type: string
+          format: uri
+          example: http://gitlab.example.com/john_doe
+        created_at:
+          type: string
+          format: date-time
+          example: 2024-02-11T09:51:52Z
+        is_admin:
+          type: boolean
+          example: false
+        bio:
+          type: string
+          example: Developer at GitLab
+    API_Entities_NewUser:
+      type: object
+      required:
+      - email
+      - password
+      - username
+      - name
+      properties:
+        email:
+          type: string
+          format: email
+          example: new.user@example.com
+        password:
+          type: string
+          format: password
+          example: securepassword123
+        username:
+          type: string
+          example: new_user
+        name:
+          type: string
+          example: New User
+        skype:
+          type: string
+          example: new.user
+        linkedin:
+          type: string
+          example: newuser
+        twitter:
+          type: string
+          example: new_user
+        website_url:
+          type: string
+          format: uri
+          example: http://newuser.example.com
+        organization:
+          type: string
+          example: GitLab
+        projects_limit:
+          type: integer
+          format: int32
+          example: 10
+        extern_uid:
+          type: string
+          example: uid-1234
+        provider:
+          type: string
+          example: github
+        bio:
+          type: string
+          example: A new GitLab user
+        location:
+          type: string
+          example: Worldwide
+        admin:
+          type: boolean
+          example: false
+        can_create_group:
+          type: boolean
+          example: true
+        skip_confirmation:
+          type: boolean
+          example: true

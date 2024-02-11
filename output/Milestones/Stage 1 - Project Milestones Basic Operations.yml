@@ -1,0 +1,132 @@
+openapi: 3.0.0
+info:
+  title: GitLab API - Project Milestones
+  version: 1.0
+  description: API for managing project milestones in GitLab
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/milestones:
+    get:
+      summary: Get a list of project milestones
+      description: Returns a list of project milestones.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of milestones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_Milestone'
+    post:
+      summary: Create a new project milestone
+      description: Creates a new milestone for the project.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_Milestone'
+      responses:
+        201:
+          description: Milestone created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Milestone'
+  /api/v4/projects/{id}/milestones/{milestone_id}:
+    put:
+      summary: Update an existing project milestone
+      description: Updates an existing milestone for the project.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: milestone_id
+        in: path
+        required: true
+        description: The ID of the milestone
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_Milestone'
+      responses:
+        200:
+          description: Milestone updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Milestone'
+    delete:
+      summary: Delete a project milestone
+      description: Deletes a milestone from the project.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: milestone_id
+        in: path
+        required: true
+        description: The ID of the milestone
+        schema:
+          type: integer
+      responses:
+        204:
+          description: Milestone deleted
+components:
+  schemas:
+    API_Entities_Milestone:
+      type: object
+      required:
+      - title
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        iid:
+          type: integer
+          readOnly: true
+        project_id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+        description:
+          type: string
+        due_date:
+          type: string
+          format: date
+        start_date:
+          type: string
+          format: date
+        state:
+          type: string
+          enum:
+          - active
+          - closed

@@ -1,0 +1,50 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing GitLab resources.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API endpoint.
+paths:
+  /api/v4/projects/{id}/protected_branches/{name}:
+    delete:
+      summary: Unprotect a repository branch
+      description: Unprotects a specified branch within a project.
+      operationId: unprotectRepositoryBranch
+      tags:
+      - branches
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID or URL-encoded path of the project.
+        schema:
+          type: string
+      - name: name
+        in: path
+        required: true
+        description: The name of the branch to unprotect.
+        schema:
+          type: string
+      responses:
+        204:
+          description: Branch was successfully unprotected.
+      security:
+      - oauth2:
+        - write_repository
+      - cookieAuth: []
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://gitlab.example.com/oauth/authorize
+          tokenUrl: https://gitlab.example.com/oauth/token
+          scopes:
+            write_repository: Grants write access to repository
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: gitlab_session

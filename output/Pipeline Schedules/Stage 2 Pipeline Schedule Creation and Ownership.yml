@@ -1,0 +1,128 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+servers:
+- url: https://gitlab.example.com/api/v4
+paths:
+  /api/v4/projects/{id}/pipeline_schedules:
+    post:
+      summary: Create a pipeline schedule
+      description: Creates a new pipeline schedule for a project.
+      operationId: createPipelineSchedule
+      tags:
+      - pipeline schedules
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                  description: The description of the pipeline schedule
+                ref:
+                  type: string
+                  description: The branch/tag name to be triggered
+                cron:
+                  type: string
+                  description: The cron pattern representing the schedule
+                cron_timezone:
+                  type: string
+                  description: The timezone
+                active:
+                  type: boolean
+                  description: Whether the schedule is active or not
+      responses:
+        201:
+          description: Pipeline schedule created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_PipelineSchedule'
+      security:
+      - oauth2:
+        - write_repository
+  /api/v4/projects/{id}/pipeline_schedules/{pipeline_schedule_id}/take_ownership:
+    post:
+      summary: Take ownership of a pipeline schedule
+      description: Allows a user to take ownership of an existing pipeline schedule.
+      operationId: takeOwnershipOfPipelineSchedule
+      tags:
+      - pipeline schedules
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: string
+      - name: pipeline_schedule_id
+        in: path
+        description: The ID of the pipeline schedule
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Ownership taken
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_PipelineSchedule'
+      security:
+      - oauth2:
+        - write_repository
+components:
+  schemas:
+    API_Entities_PipelineSchedule:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the pipeline schedule
+        description:
+          type: string
+          description: The description of the pipeline schedule
+        ref:
+          type: string
+          description: The branch/tag name to be triggered
+        cron:
+          type: string
+          description: The cron pattern representing the schedule
+        cron_timezone:
+          type: string
+          description: The timezone
+        next_run_at:
+          type: string
+          format: date-time
+          description: The next scheduled run time
+        active:
+          type: boolean
+          description: Whether the schedule is active or not
+        created_by:
+          type: object
+          properties:
+            name:
+              type: string
+            username:
+              type: string
+            id:
+              type: integer
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://gitlab.example.com/oauth/authorize
+          tokenUrl: https://gitlab.example.com/oauth/token
+          scopes:
+            write_repository: Grants write access to repository

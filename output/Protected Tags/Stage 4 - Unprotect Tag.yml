@@ -1,0 +1,43 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing GitLab resources.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API endpoint
+paths:
+  /api/v4/projects/{id}/protected_tags/{name}:
+    delete:
+      summary: Unprotect Tag
+      description: Removes protection from the specified tag or wildcard protected tag.
+      operationId: unprotectTag
+      tags:
+      - Protected Tags
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: string
+      - name: name
+        in: path
+        description: The name of the protected tag or wildcard
+        required: true
+        schema:
+          type: string
+      responses:
+        204:
+          description: No Content - Tag protection successfully removed
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://gitlab.example.com/oauth/authorize
+          tokenUrl: https://gitlab.example.com/oauth/token
+          scopes: {}
+security:
+- oauth2: []

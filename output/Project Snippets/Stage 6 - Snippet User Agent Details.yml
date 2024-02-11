@@ -1,0 +1,67 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: GitLab API for accessing and managing projects, snippets, and more.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/snippets/{snippet_id}/user_agent_detail:
+    get:
+      summary: Get snippet user agent details
+      description: Retrieve user agent details for a specific snippet within a project.
+      operationId: getSnippetUserAgentDetails
+      tags:
+      - Snippets
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+      - name: snippet_id
+        in: path
+        description: The ID of the snippet
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: User agent details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_UserAgentDetail'
+      security:
+      - oauth2:
+        - read_api
+components:
+  schemas:
+    API_Entities_UserAgentDetail:
+      type: object
+      properties:
+        user_agent:
+          type: string
+          description: The user agent string of the browser or tool used to access the snippet
+        ip_address:
+          type: string
+          description: The IP address from which the snippet was accessed
+        created_at:
+          type: string
+          format: date-time
+          description: The timestamp when the access occurred
+      required:
+      - user_agent
+      - ip_address
+      - created_at
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://gitlab.example.com/oauth/authorize
+          tokenUrl: https://gitlab.example.com/oauth/token
+          scopes:
+            read_api: Grants read access to the API

@@ -1,0 +1,63 @@
+openapi: 3.0.3
+info:
+  title: GitLab Merge Train API
+  version: 1.0
+  description: API for interacting with Merge Trains in GitLab
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/merge_trains/{target_branch}:
+    get:
+      summary: Get Merge Train by Target Branch
+      description: Retrieve the merge train for a specific target branch within a project.
+      operationId: getMergeTrainByTargetBranch
+      tags:
+      - merge-trains
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+      - name: target_branch
+        in: path
+        description: The name of the target branch
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: A list of merge train items for the specified target branch
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_MergeTrainItem'
+components:
+  schemas:
+    API_Entities_MergeTrainItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the merge train item
+        sha:
+          type: string
+          description: The commit SHA that the merge train item is for
+        ref:
+          type: string
+          description: The reference for the merge train item
+        status:
+          type: string
+          description: The status of the merge train item
+        created_at:
+          type: string
+          format: date-time
+          description: The time the merge train item was created
+        updated_at:
+          type: string
+          format: date-time
+          description: The time the merge train item was last updated

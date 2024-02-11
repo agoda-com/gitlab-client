@@ -1,0 +1,67 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing GitLab resources.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API endpoint
+paths:
+  /api/v4/projects/{id}/protected_tags:
+    post:
+      summary: Protects a repository tag
+      description: Protects a single repository tag or multiple tags using a wildcard.
+      operationId: protectRepositoryTag
+      tags:
+      - Protected Tags
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Tag protection details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the tag or wildcard
+                  example: v1.0.0
+                create_access_level:
+                  type: string
+                  description: Access level required to create the tag
+                  enum:
+                  - No one
+                  - Maintainer
+                  - Developer
+                  example: Maintainer
+      responses:
+        201:
+          description: Tag protection was created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_ProtectedTag'
+components:
+  schemas:
+    API_Entities_ProtectedTag:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the protected tag
+        create_access_level:
+          type: object
+          properties:
+            access_level:
+              type: integer
+              description: The minimum access level required to create the tag
+            access_level_description:
+              type: string
+              description: The description of the access level

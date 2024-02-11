@@ -1,0 +1,53 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API endpoint
+paths:
+  /api/v4/projects/{id}/repository/tags/{tag_name}/signature:
+    get:
+      summary: Get a tag's signature
+      description: Retrieve the GPG signature for a specific tag within a project.
+      operationId: getTagSignature
+      tags:
+      - Tags
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: string
+      - name: tag_name
+        in: path
+        description: The name of the tag
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Signature retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_TagSignature'
+components:
+  schemas:
+    API_Entities_TagSignature:
+      type: object
+      properties:
+        tag_name:
+          type: string
+          description: The name of the tag
+        signature:
+          type: string
+          description: The GPG signature of the tag
+        verification_status:
+          type: string
+          description: The status of the signature verification
+      required:
+      - tag_name
+      - signature
+      - verification_status

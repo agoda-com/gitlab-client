@@ -1,0 +1,96 @@
+openapi: 3.0.0
+info:
+  title: Runner Jobs API
+  version: 1.0.0
+  description: API for managing runner jobs in GitLab
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/runners/{id}/jobs:
+    get:
+      summary: Get jobs for a specific runner
+      description: Returns a list of jobs that are associated with the specified runner.
+      operationId: getRunnerJobs
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the runner
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of jobs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_Job'
+  /api/v4/runners/{id}/managers/{system_id}/jobs:
+    get:
+      summary: Get jobs for a specific manager within a runner
+      description: Returns a list of jobs that are managed by the specified manager within the specified runner.
+      operationId: getRunnerManagerJobs
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the runner
+        schema:
+          type: integer
+      - name: system_id
+        in: path
+        required: true
+        description: The system ID of the manager
+        schema:
+          type: string
+      responses:
+        200:
+          description: An array of jobs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_Job'
+components:
+  schemas:
+    API_Entities_Job:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The ID of the job
+        status:
+          type: string
+          description: The status of the job
+        stage:
+          type: string
+          description: The stage of the job
+        name:
+          type: string
+          description: The name of the job
+        ref:
+          type: string
+          description: The reference for the job
+        tag:
+          type: boolean
+          description: Whether the job is associated with a tag
+        coverage:
+          type: string
+          description: Code coverage data for the job
+        created_at:
+          type: string
+          format: date-time
+          description: The time the job was created
+        started_at:
+          type: string
+          format: date-time
+          description: The time the job was started
+        finished_at:
+          type: string
+          format: date-time
+          description: The time the job was finished

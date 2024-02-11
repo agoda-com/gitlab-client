@@ -1,0 +1,67 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: GitLab API for interacting with GitLab projects and repositories.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/protected_branches:
+    get:
+      summary: List Protected Branches
+      description: Get a list of protected branches from a project.
+      operationId: listProtectedBranches
+      tags:
+      - protected branches
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: An array of protected branches
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_ProtectedBranch'
+components:
+  schemas:
+    API_Entities_ProtectedBranch:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 42
+        name:
+          type: string
+          example: main
+        push_access_levels:
+          type: array
+          items:
+            $ref: '#/components/schemas/API_Entities_AccessLevel'
+        merge_access_levels:
+          type: array
+          items:
+            $ref: '#/components/schemas/API_Entities_AccessLevel'
+        allow_force_push:
+          type: boolean
+          example: false
+        code_owner_approval_required:
+          type: boolean
+          example: false
+    API_Entities_AccessLevel:
+      type: object
+      properties:
+        access_level:
+          type: integer
+          example: 40
+        access_level_description:
+          type: string
+          example: Maintainers

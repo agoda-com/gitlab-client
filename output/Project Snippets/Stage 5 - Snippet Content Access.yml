@@ -1,0 +1,73 @@
+openapi: 3.0.0
+info:
+  title: GitLab Snippet Content Access API
+  version: 1.0
+servers:
+- url: https://gitlab.example.com/api/v4
+paths:
+  /api/v4/projects/{id}/snippets/{snippet_id}/raw:
+    get:
+      summary: Get raw snippet content
+      description: Retrieve the raw content of a snippet by its ID.
+      operationId: getRawSnippetContent
+      tags:
+      - snippets
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+      - name: snippet_id
+        in: path
+        description: The ID of the snippet
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Raw snippet content retrieved successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+  /api/v4/projects/{id}/snippets/{snippet_id}/files/{ref}/{file_path}/raw:
+    get:
+      summary: Get raw file content from a snippet
+      description: Retrieve the raw content of a specific file from a snippet by specifying the file path and reference.
+      operationId: getRawFileFromSnippet
+      tags:
+      - snippets
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+      - name: snippet_id
+        in: path
+        description: The ID of the snippet
+        required: true
+        schema:
+          type: integer
+      - name: ref
+        in: path
+        description: The branch, tag, or commit to retrieve the file from
+        required: true
+        schema:
+          type: string
+      - name: file_path
+        in: path
+        description: The full path to the file within the repository
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Raw file content retrieved successfully
+          content:
+            text/plain:
+              schema:
+                type: string

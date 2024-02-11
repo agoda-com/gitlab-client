@@ -1,0 +1,86 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for interacting with GitLab resources.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/deployments/{deployment_id}/merge_requests:
+    get:
+      summary: Get merge requests associated with a deployment
+      description: Returns a list of merge requests associated with a given deployment in a project.
+      operationId: getDeploymentMergeRequests
+      tags:
+      - deployments
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: string
+      - name: deployment_id
+        in: path
+        description: The ID of the deployment
+        required: true
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        description: Number of items to list per page
+        required: false
+        schema:
+          type: integer
+          default: 20
+      - name: page
+        in: query
+        description: The page number to retrieve
+        required: false
+        schema:
+          type: integer
+          default: 1
+      responses:
+        200:
+          description: An array of merge requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_MergeRequest'
+components:
+  schemas:
+    API_Entities_MergeRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the merge request
+        iid:
+          type: integer
+          description: The internal ID of the merge request within its project
+        project_id:
+          type: integer
+          description: The ID of the project to which the merge request belongs
+        title:
+          type: string
+          description: The title of the merge request
+        description:
+          type: string
+          description: The description of the merge request
+        state:
+          type: string
+          description: The state of the merge request (e.g., opened, closed, merged)
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the merge request was created
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time when the merge request was last updated
+security:
+- oauth2:
+  - read_repository

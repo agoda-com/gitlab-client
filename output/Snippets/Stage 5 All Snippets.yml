@@ -1,0 +1,86 @@
+openapi: 3.0.0
+info:
+  title: GitLab Snippets API
+  version: 1.0
+  description: API for interacting with GitLab snippets
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/snippets/all:
+    get:
+      summary: Get all snippets
+      description: Retrieve all the snippets available, including public and private snippets for authenticated users.
+      operationId: getAllSnippets
+      tags:
+      - snippets
+      responses:
+        200:
+          description: An array of snippets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_Snippet'
+components:
+  schemas:
+    API_Entities_Snippet:
+      type: object
+      required:
+      - id
+      - title
+      - file_name
+      - content
+      - author
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The unique identifier of the snippet
+        title:
+          type: string
+          description: The title of the snippet
+        file_name:
+          type: string
+          description: The name of the snippet file
+        content:
+          type: string
+          description: The content of the snippet
+        author:
+          $ref: '#/components/schemas/API_Entities_User'
+        visibility:
+          type: string
+          description: The visibility of the snippet (public, internal, or private)
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the snippet was created
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time when the snippet was last updated
+    API_Entities_User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The unique identifier of the user
+        username:
+          type: string
+          description: The username of the user
+        name:
+          type: string
+          description: The name of the user
+        state:
+          type: string
+          description: The state of the user (active, blocked, etc.)
+        avatar_url:
+          type: string
+          format: uri
+          description: The URL of the user's avatar image
+        web_url:
+          type: string
+          format: uri
+          description: The URL of the user's GitLab profile

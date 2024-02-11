@@ -1,0 +1,130 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/milestones/{milestone_id}:
+    get:
+      summary: Get a single project milestone
+      description: Get all details of a single milestone for a project.
+      operationId: getProjectMilestone
+      tags:
+      - milestones
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+      - name: milestone_id
+        in: path
+        description: The ID of the milestone
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Successful response with milestone details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Milestone'
+  /api/v4/projects/{id}/milestones/{milestone_id}/issues:
+    get:
+      summary: List issues for a single milestone
+      description: Get a list of project issues associated with a single milestone.
+      operationId: getMilestoneIssues
+      tags:
+      - issues
+      - milestones
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+      - name: milestone_id
+        in: path
+        description: The ID of the milestone
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Successful response with a list of issues.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_Issue'
+  /api/v4/projects/{id}/milestones/{milestone_id}/merge_requests:
+    get:
+      summary: List merge requests for a single milestone
+      description: Get a list of merge requests associated with a single milestone.
+      operationId: getMilestoneMergeRequests
+      tags:
+      - merge requests
+      - milestones
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+      - name: milestone_id
+        in: path
+        description: The ID of the milestone
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Successful response with a list of merge requests.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_MergeRequest'
+components:
+  schemas:
+    API_Entities_Milestone:
+      type: object
+      properties:
+        id:
+          type: integer
+        iid:
+          type: integer
+        project_id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        state:
+          type: string
+        due_date:
+          type: string
+        start_date:
+          type: string
+    API_Entities_Issue:
+      type: object
+      properties: 
+    API_Entities_MergeRequest:
+      type: object
+      properties: 
+security:
+- oauth2:
+    type: oauth2
+    flows:
+      authorizationCode:
+        authorizationUrl: https://gitlab.example.com/oauth/authorize
+        tokenUrl: https://gitlab.example.com/oauth/token
+        scopes: {}

@@ -1,0 +1,90 @@
+openapi: 3.0.0
+info:
+  title: GitLab Resource State Events API
+  version: 1.0
+  description: API endpoints for handling issue state events in GitLab.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{project_id}/issues/{issue_iid}/resource_state_events:
+    get:
+      summary: List issue state events
+      description: Get a list of all state events for a single issue.
+      operationId: listIssueStateEvents
+      tags:
+      - Issue State Events
+      parameters:
+      - name: project_id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: issue_iid
+        in: path
+        required: true
+        description: The internal ID of the issue
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        description: Number of items to list per page
+        schema:
+          type: integer
+          default: 20
+      - name: page
+        in: query
+        description: The page number to paginate through the list
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of issue state events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_IssueStateEvent'
+components:
+  schemas:
+    API_Entities_IssueStateEvent:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the state event
+        user:
+          $ref: '#/components/schemas/API_Entities_User'
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the event was created
+        state:
+          type: string
+          description: The state of the issue after the event
+        note:
+          type: string
+          description: An optional note associated with the state change
+    API_Entities_User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the user
+        name:
+          type: string
+          description: The name of the user
+        username:
+          type: string
+          description: The username of the user
+        state:
+          type: string
+          description: The state of the user
+        avatar_url:
+          type: string
+          description: The avatar URL of the user
+        web_url:
+          type: string
+          description: The web URL of the user profile

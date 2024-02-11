@@ -1,0 +1,70 @@
+openapi: 3.0.0
+info:
+  title: GitLab Award Emoji API
+  version: 1.0
+  description: API for managing award emojis in GitLab
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/issues/{issue_iid}/award_emoji:
+    post:
+      summary: Add an emoji award to an issue
+      operationId: addIssueAwardEmoji
+      tags:
+      - issues
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: issue_iid
+        in: path
+        required: true
+        description: The internal ID of the issue
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the emoji to award
+      responses:
+        201:
+          description: Emoji awarded successfully
+  /api/v4/projects/{id}/merge_requests/{merge_request_iid}/award_emoji:
+    post:
+      summary: Add an emoji award to a merge request
+      operationId: addMergeRequestAwardEmoji
+      tags:
+      - merge_requests
+  /api/v4/projects/{id}/snippets/{snippet_id}/award_emoji:
+    post:
+      summary: Add an emoji award to a snippet
+      operationId: addSnippetAwardEmoji
+      tags:
+      - snippets
+  /api/v4/projects/{id}/issues/{issue_iid}/notes/{note_id}/award_emoji:
+    post:
+      summary: Add an emoji award to a note on an issue
+      operationId: addNoteAwardEmoji
+      tags:
+      - issue_notes
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://gitlab.example.com/oauth/authorize
+          tokenUrl: https://gitlab.example.com/oauth/token
+          scopes: {}
+security:
+- OAuth2: []

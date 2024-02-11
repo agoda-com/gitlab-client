@@ -1,0 +1,123 @@
+openapi: 3.0.0
+info:
+  title: User Custom Attributes API
+  version: 1.0.0
+  description: API endpoints for managing custom attributes on user profiles
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/users/{id}/custom_attributes:
+    get:
+      summary: Get all custom attributes for a user
+      description: Returns a list of all custom attributes for the specified user.
+      operationId: getUserCustomAttributes
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the user
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of custom attributes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_CustomAttribute'
+  /api/v4/users/{id}/custom_attributes/{key}:
+    get:
+      summary: Get a single custom attribute for a user
+      description: Returns a single custom attribute for the specified user by key.
+      operationId: getUserCustomAttributeByKey
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the user
+        schema:
+          type: integer
+      - name: key
+        in: path
+        required: true
+        description: The key of the custom attribute
+        schema:
+          type: string
+      responses:
+        200:
+          description: A custom attribute object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_CustomAttribute'
+    put:
+      summary: Update a custom attribute for a user
+      description: Updates the value of a specified custom attribute for the user.
+      operationId: updateUserCustomAttribute
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the user
+        schema:
+          type: integer
+      - name: key
+        in: path
+        required: true
+        description: The key of the custom attribute
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: string
+                  description: The new value for the custom attribute
+      responses:
+        200:
+          description: Custom attribute updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_CustomAttribute'
+    delete:
+      summary: Delete a custom attribute for a user
+      description: Deletes a specified custom attribute from the user's profile.
+      operationId: deleteUserCustomAttribute
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the user
+        schema:
+          type: integer
+      - name: key
+        in: path
+        required: true
+        description: The key of the custom attribute
+        schema:
+          type: string
+      responses:
+        204:
+          description: Custom attribute deleted successfully
+components:
+  schemas:
+    API_Entities_CustomAttribute:
+      type: object
+      properties:
+        key:
+          type: string
+          description: The key of the custom attribute
+        value:
+          type: string
+          description: The value of the custom attribute
+      required:
+      - key
+      - value

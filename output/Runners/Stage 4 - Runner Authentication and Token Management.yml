@@ -1,0 +1,75 @@
+openapi: 3.0.0
+info:
+  title: GitLab Runner Authentication API
+  version: 1.0
+  description: API for managing GitLab Runner authentication and token management
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/runners/verify:
+    post:
+      summary: Verify runner
+      description: Allows a runner to verify its authenticity with the GitLab instance.
+      operationId: verifyRunner
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: The runner's authentication token.
+              required:
+              - token
+      responses:
+        200:
+          description: Runner verified successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Runner verified successfully.
+  /api/v4/runners/reset_registration_token:
+    post:
+      summary: Reset runner registration token
+      description: Resets the registration token for a runner.
+      operationId: resetRunnerRegistrationToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                runner_id:
+                  type: integer
+                  description: The ID of the runner.
+              required:
+              - runner_id
+      responses:
+        200:
+          description: Runner registration token reset successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: new-registration-token
+components:
+  schemas:
+    API_Entities_Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: An error occurred.
+      required:
+      - message

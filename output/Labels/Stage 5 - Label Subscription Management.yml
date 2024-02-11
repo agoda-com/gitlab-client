@@ -1,0 +1,55 @@
+openapi: 3.0.0
+info:
+  title: GitLab Label Subscription Management API
+  version: 1.0
+  description: API endpoints for managing label subscriptions in GitLab projects.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/labels/{label_id}/subscribe:
+    post:
+      summary: Subscribe to a label
+      description: Subscribes the authenticated user to a label within a project.
+      operationId: subscribeToLabel
+      tags:
+      - Label Subscription
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project.
+        schema:
+          type: integer
+      - name: label_id
+        in: path
+        required: true
+        description: The ID of the label to subscribe to.
+        schema:
+          type: integer
+      responses:
+        201:
+          description: Subscription successful.
+  /api/v4/projects/{id}/labels/{label_id}/unsubscribe:
+    post:
+      summary: Unsubscribe from a label
+      description: Unsubscribes the authenticated user from a label within a project.
+      operationId: unsubscribeFromLabel
+      tags:
+      - Label Subscription
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project.
+        schema:
+          type: integer
+      - name: label_id
+        in: path
+        required: true
+        description: The ID of the label to unsubscribe from.
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Unsubscription successful.

@@ -1,0 +1,99 @@
+openapi: 3.0.0
+info:
+  title: GitLab To-Do Item Notifications API
+  version: 1.0.0
+  description: API for managing to-do item notifications in GitLab
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/todos:
+    post:
+      summary: Create a new to-do item
+      description: Adds a new to-do item and triggers a notification to users.
+      operationId: createTodo
+      tags:
+      - To-Do
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_ToDoItem'
+      responses:
+        201:
+          description: To-do item created and notification sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_ToDoItem'
+  /api/v4/todos/{id}:
+    put:
+      summary: Update an existing to-do item
+      description: Updates an existing to-do item and triggers a notification to users.
+      operationId: updateTodo
+      tags:
+      - To-Do
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Unique ID of the to-do item
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_ToDoItem'
+      responses:
+        200:
+          description: To-do item updated and notification sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_ToDoItem'
+components:
+  schemas:
+    API_Entities_ToDoItem:
+      type: object
+      required:
+      - title
+      - description
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+        title:
+          type: string
+          example: Review merge request
+        description:
+          type: string
+          example: Review the latest merge request for the API feature.
+        due_date:
+          type: string
+          format: date
+          example: 2024-02-20
+        state:
+          type: string
+          enum:
+          - pending
+          - completed
+          example: pending
+        assignee:
+          $ref: '#/components/schemas/API_Entities_User'
+    API_Entities_User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        email:
+          type: string
+        username:
+          type: string

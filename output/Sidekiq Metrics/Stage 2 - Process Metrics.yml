@@ -1,0 +1,79 @@
+openapi: 3.0.0
+info:
+  title: Sidekiq Process Metrics API
+  version: 1.0.0
+  description: API for retrieving metrics about Sidekiq workers processing queues.
+servers:
+- url: https://your-gitlab-instance.com/api/v4
+  description: Main GitLab server
+paths:
+  /api/v4/sidekiq/process_metrics:
+    get:
+      summary: Lists information about all Sidekiq workers
+      description: Retrieve metrics and information about all Sidekiq workers registered to process queues.
+      operationId: getSidekiqProcessMetrics
+      tags:
+      - Sidekiq
+      responses:
+        200:
+          description: An array of Sidekiq process metrics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_SidekiqProcessMetric'
+components:
+  schemas:
+    API_Entities_SidekiqProcessMetric:
+      type: object
+      properties:
+        hostname:
+          type: string
+          description: The hostname of the worker
+        started_at:
+          type: string
+          format: date-time
+          description: The start time of the worker process
+        pid:
+          type: integer
+          description: The process ID of the worker
+        tag:
+          type: string
+          description: A tag for the worker, if any
+        concurrency:
+          type: integer
+          description: The number of threads the worker is using
+        queues:
+          type: array
+          items:
+            type: string
+          description: The list of queues the worker is processing
+        labels:
+          type: array
+          items:
+            type: string
+          description: Labels assigned to the worker, if any
+        busy:
+          type: integer
+          description: The number of jobs being processed
+        quiet:
+          type: boolean
+          description: Whether the worker is quiet or not
+        beat:
+          type: string
+          format: date-time
+          description: The last heartbeat time of the worker
+        rss:
+          type: integer
+          description: The RSS memory size of the worker in bytes
+      required:
+      - hostname
+      - started_at
+      - pid
+      - concurrency
+      - queues
+      - busy
+      - quiet
+      - beat
+      - rss

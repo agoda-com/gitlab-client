@@ -1,0 +1,72 @@
+openapi: 3.0.0
+info:
+  title: GitLab Project Search API
+  version: 1.0
+  description: API for searching within a GitLab project.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/search:
+    get:
+      summary: Search within a project
+      description: Search for issues, merge requests, milestones, or users within a specific project.
+      operationId: searchProject
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project to search within
+        schema:
+          type: integer
+      - name: scope
+        in: query
+        required: true
+        description: The scope of the search. Can be 'issues', 'merge_requests', 'milestones', or 'users'.
+        schema:
+          type: string
+          enum:
+          - issues
+          - merge_requests
+          - milestones
+          - users
+      - name: search
+        in: query
+        required: true
+        description: The search query string.
+        schema:
+          type: string
+      responses:
+        200:
+          description: Search results matching the query.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  issues:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/API_Entities_Issue'
+                  merge_requests:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/API_Entities_MergeRequest'
+                  milestones:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/API_Entities_Milestone'
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/API_Entities_User'
+components:
+  schemas:
+    API_Entities_Issue:
+      type: object
+    API_Entities_MergeRequest:
+      type: object
+    API_Entities_Milestone:
+      type: object
+    API_Entities_User:
+      type: object

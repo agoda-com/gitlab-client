@@ -1,0 +1,36 @@
+openapi: 3.0.0
+info:
+  title: GitLab Deployment Deletion API
+  version: 1.0.0
+  description: API for deleting deployments in a GitLab project
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/deployments/{deployment_id}:
+    delete:
+      summary: Delete a deployment
+      description: Deletes a specified deployment from a project.
+      operationId: deleteDeployment
+      tags:
+      - Deployments
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: deployment_id
+        in: path
+        required: true
+        description: The ID of the deployment to delete
+        schema:
+          type: integer
+      responses:
+        204:
+          description: No Content - The deployment was successfully deleted.
+      security:
+      - oauth2:
+        - write:deployments
+        - delete:deployments

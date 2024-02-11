@@ -1,0 +1,65 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for interacting with GitLab resources.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: Main GitLab server
+paths:
+  /api/v4/projects/{id}/milestones/{milestone_id}/burndown_events:
+    get:
+      summary: Get milestone burndown events
+      description: Retrieves burndown events for a specific milestone within a project.
+      operationId: getMilestoneBurndownEvents
+      tags:
+      - Milestones
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+      - name: milestone_id
+        in: path
+        description: The ID of the milestone
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of burndown events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_BurndownEvent'
+components:
+  schemas:
+    API_Entities_BurndownEvent:
+      type: object
+      properties:
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the event was created
+        action:
+          type: string
+          enum:
+          - created
+          - closed
+          - reopened
+          description: The type of the event
+        issue_id:
+          type: integer
+          description: The ID of the issue associated with the event
+        weight:
+          type: integer
+          nullable: true
+          description: The weight of the issue at the time of the event
+      required:
+      - created_at
+      - action
+      - issue_id

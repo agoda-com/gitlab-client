@@ -1,0 +1,94 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: GitLab API for interacting with GitLab resources.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/issues/{issue_iid}/notes:
+    post:
+      summary: Add a note to an issue and promote it to an incident
+      description: >
+        Adds a note to a single project issue. You can use the `/promote` quick action within the note to promote the issue to an incident.
+      tags:
+      - issues
+      operationId: addIssueNoteAndPromote
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          type: string
+      - name: issue_iid
+        in: path
+        required: true
+        description: The internal ID of the project's issue
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: string
+                  description: The content of the note. Include `/promote` to promote the issue to an incident.
+                  example: This issue is critical. /promote
+              required:
+              - body
+      responses:
+        201:
+          description: Note created and issue promoted to incident
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Note'
+components:
+  schemas:
+    API_Entities_Note:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The ID of the note
+        body:
+          type: string
+          description: The content of the note
+        author:
+          $ref: '#/components/schemas/API_Entities_User'
+        created_at:
+          type: string
+          format: date-time
+          description: The creation date of the note
+        updated_at:
+          type: string
+          format: date-time
+          description: The last update date of the note
+    API_Entities_User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The ID of the user
+        name:
+          type: string
+          description: The name of the user
+        username:
+          type: string
+          description: The username of the user
+        state:
+          type: string
+          description: The state of the user
+        avatar_url:
+          type: string
+          description: The avatar URL of the user
+        web_url:
+          type: string
+          description: The web URL of the user profile

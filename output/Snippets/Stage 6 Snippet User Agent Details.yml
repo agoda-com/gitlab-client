@@ -1,0 +1,50 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: The GitLab API for interacting with snippets and user agent details.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/snippets/{id}/user_agent_detail:
+    get:
+      summary: Get snippet user agent details
+      description: Retrieve user agent details for a specific snippet.
+      operationId: getSnippetUserAgentDetail
+      tags:
+      - snippets
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the snippet
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: User agent details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_UserAgentDetail'
+components:
+  schemas:
+    API_Entities_UserAgentDetail:
+      type: object
+      properties:
+        user_agent:
+          type: string
+          description: The user agent string of the last request for the snippet
+        ip_address:
+          type: string
+          description: The IP address of the last request for the snippet
+        last_accessed_at:
+          type: string
+          format: date-time
+          description: The timestamp of the last access to the snippet
+      required:
+      - user_agent
+      - ip_address
+      - last_accessed_at

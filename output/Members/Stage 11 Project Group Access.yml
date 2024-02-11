@@ -1,0 +1,73 @@
+openapi: 3.0.0
+info:
+  title: GitLab Project Group Access API
+  version: 1.0
+  description: API for sharing a project with a group in GitLab
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/share:
+    post:
+      summary: Share a project with a group
+      description: Shares a project with a specified group.
+      operationId: shareProjectWithGroup
+      tags:
+      - Project Group Access
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Group sharing details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - group_id
+              - group_access
+              - expires_at
+              properties:
+                group_id:
+                  type: integer
+                  description: The ID of the group to share the project with
+                group_access:
+                  type: integer
+                  description: Access level for the group
+                  enum:
+                  - 10
+                  - 20
+                  - 30
+                  - 40
+                  - 50
+                expires_at:
+                  type: string
+                  format: date
+                  description: Expiration date for group access
+      responses:
+        201:
+          description: Project was shared successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Project was shared with group successfully.
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://gitlab.example.com/oauth/authorize
+          tokenUrl: https://gitlab.example.com/oauth/token
+          scopes: {}
+security:
+- OAuth2: []

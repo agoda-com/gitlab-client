@@ -1,0 +1,65 @@
+openapi: 3.0.0
+info:
+  title: GitLab Project Badge API
+  version: 1.0
+  description: API for managing project badges in GitLab
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/badges/{badge_id}:
+    get:
+      summary: Fetch a single project badge
+      description: Retrieves a single badge of a project using the badge ID.
+      operationId: getProjectBadge
+      tags:
+      - Badges
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: badge_id
+        in: path
+        required: true
+        description: The ID of the badge to retrieve
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Successful retrieval of the badge
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Badge'
+components:
+  schemas:
+    API_Entities_Badge:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the badge
+        link_url:
+          type: string
+          description: The URL the badge links to
+        image_url:
+          type: string
+          description: The URL of the badge image
+        rendered_link_url:
+          type: string
+          description: The rendered link URL
+        rendered_image_url:
+          type: string
+          description: The rendered image URL
+        kind:
+          type: string
+          description: The kind of the badge (e.g., 'project')
+    API_Entities_Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: A message describing the error

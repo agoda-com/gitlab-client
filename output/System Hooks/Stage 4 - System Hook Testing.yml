@@ -1,0 +1,52 @@
+openapi: 3.0.0
+info:
+  title: GitLab System Hook Testing API
+  version: 1.0
+  description: API for testing system hooks in GitLab
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/hooks/{id}:
+    post:
+      summary: Executes the system hook with mock data
+      description: This endpoint is used to test the configuration of a system hook by executing it with mock data.
+      operationId: executeSystemHook
+      tags:
+      - System Hooks
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the system hook to be tested
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        description: Optional mock data to be sent with the system hook execution
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: System hook executed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+components:
+  schemas:
+    API_Entities_Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message detailing the cause of the failure

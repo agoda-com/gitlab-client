@@ -1,0 +1,118 @@
+openapi: 3.0.0
+info:
+  title: GitLab Group Milestones API
+  version: 1.0
+  description: API for listing group milestones in GitLab
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/groups/{id}/milestones:
+    get:
+      summary: Get a list of group milestones
+      description: >
+        Retrieves milestones for a specified group. Supports filtering by iid, state, title, search query, and updated before/after dates.
+      operationId: getGroupMilestones
+      tags:
+      - groups
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the group
+        required: true
+        schema:
+          type: string
+      - name: iids[]
+        in: query
+        description: Return only the milestones having the given iid
+        required: false
+        schema:
+          type: array
+          items:
+            type: integer
+      - name: state
+        in: query
+        description: Return only active or closed milestones
+        required: false
+        schema:
+          type: string
+          enum:
+          - active
+          - closed
+      - name: title
+        in: query
+        description: Return only milestones with the specified title
+        required: false
+        schema:
+          type: string
+      - name: search
+        in: query
+        description: Search milestones for text present in the title, description, or iids
+        required: false
+        schema:
+          type: string
+      - name: updated_before
+        in: query
+        description: Return only milestones updated before the given time
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - name: updated_after
+        in: query
+        description: Return only milestones updated after the given time
+        required: false
+        schema:
+          type: string
+          format: date-time
+      responses:
+        200:
+          description: An array of milestones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_Milestone'
+components:
+  schemas:
+    API_Entities_Milestone:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The ID of the milestone
+        iid:
+          type: integer
+          format: int64
+          description: The internal ID of the milestone within its scope
+        group_id:
+          type: integer
+          format: int64
+          description: The ID of the group that owns the milestone
+        title:
+          type: string
+          description: The title of the milestone
+        description:
+          type: string
+          description: The description of the milestone
+        state:
+          type: string
+          description: The state of the milestone (active, closed)
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the milestone was created
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time when the milestone was last updated
+        due_date:
+          type: string
+          format: date
+          description: The due date of the milestone
+        start_date:
+          type: string
+          format: date
+          description: The start date of the milestone

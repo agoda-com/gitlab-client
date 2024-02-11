@@ -1,0 +1,161 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing GitLab projects, boards, and lists
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/boards/{board_id}/lists/{list_id}:
+    get:
+      summary: Get a single board list
+      description: Retrieves details of a single list within a board of a project.
+      operationId: getBoardList
+      tags:
+      - boards
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: board_id
+        in: path
+        required: true
+        description: The ID of the board
+        schema:
+          type: integer
+      - name: list_id
+        in: path
+        required: true
+        description: The ID of the list
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Successful response with the details of the list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_List'
+    put:
+      summary: Update a board list
+      description: Updates an existing list within a board of a project.
+      operationId: updateBoardList
+      tags:
+      - boards
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: board_id
+        in: path
+        required: true
+        description: The ID of the board
+        schema:
+          type: integer
+      - name: list_id
+        in: path
+        required: true
+        description: The ID of the list
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_ListUpdate'
+      responses:
+        200:
+          description: Successful response with the updated list details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_List'
+    delete:
+      summary: Delete a board list
+      description: Deletes a list from a board of a project.
+      operationId: deleteBoardList
+      tags:
+      - boards
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: board_id
+        in: path
+        required: true
+        description: The ID of the board
+        schema:
+          type: integer
+      - name: list_id
+        in: path
+        required: true
+        description: The ID of the list
+        schema:
+          type: integer
+      responses:
+        204:
+          description: List successfully deleted
+components:
+  schemas:
+    API_Entities_List:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the list
+        label:
+          type: object
+          properties:
+            name:
+              type: string
+              description: The name of the label associated with the list
+            color:
+              type: string
+              description: The color of the label
+            description:
+              type: string
+              description: The description of the label
+        position:
+          type: integer
+          description: The position of the list on the board
+        max_issue_count:
+          type: integer
+          description: The maximum number of issues that can be added to the list
+        max_issue_weight:
+          type: integer
+          description: The maximum weight of issues that can be added to the list
+        limit_metric:
+          type: string
+          description: The metric used to limit the list
+        active:
+          type: boolean
+          description: Whether the list is active or not
+    API_Entities_ListUpdate:
+      type: object
+      properties:
+        label_id:
+          type: integer
+          description: The ID of the label to associate with the list
+        position:
+          type: integer
+          description: The new position of the list on the board
+        max_issue_count:
+          type: integer
+          description: The new maximum number of issues that can be added to the list
+        max_issue_weight:
+          type: integer
+          description: The new maximum weight of issues that can be added to the list
+        limit_metric:
+          type: string
+          description: The new metric used to limit the list

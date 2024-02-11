@@ -1,0 +1,85 @@
+openapi: 3.0.0
+info:
+  title: GitLab Badge API
+  version: 1.0
+  description: API for managing badges in GitLab projects
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/badges/{badge_id}:
+    put:
+      summary: Updates an existing badge
+      description: Updates the information of an existing badge in a project.
+      operationId: updateProjectBadge
+      tags:
+      - Badges
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: integer
+      - name: badge_id
+        in: path
+        description: The ID of the badge
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Badge update parameters
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                link_url:
+                  type: string
+                  description: The URL of the badge link
+                image_url:
+                  type: string
+                  description: The URL of the badge image
+                rendered_link_url:
+                  type: string
+                  description: The rendered link URL returned in the response
+                rendered_image_url:
+                  type: string
+                  description: The rendered image URL returned in the response
+              required:
+              - link_url
+              - image_url
+      responses:
+        200:
+          description: Badge updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Badge'
+components:
+  schemas:
+    API_Entities_Badge:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the badge
+        link_url:
+          type: string
+          description: The URL of the badge link
+        image_url:
+          type: string
+          description: The URL of the badge image
+        rendered_link_url:
+          type: string
+          description: The rendered link URL
+        rendered_image_url:
+          type: string
+          description: The rendered image URL
+      required:
+      - id
+      - link_url
+      - image_url
+      - rendered_link_url
+      - rendered_image_url

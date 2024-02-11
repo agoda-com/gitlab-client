@@ -1,0 +1,112 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing GitLab resources including projects, snippets, etc.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API endpoint
+paths:
+  /api/v4/projects/{id}/snippets/{snippet_id}:
+    put:
+      tags:
+      - snippets
+      summary: Update an existing snippet
+      description: Updates an existing snippet by its ID within a specified project.
+      operationId: updateProjectSnippet
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: snippet_id
+        in: path
+        required: true
+        description: The ID of the snippet to update
+        schema:
+          type: integer
+      requestBody:
+        description: Snippet object that needs to be updated
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: The title of the snippet
+                file_name:
+                  type: string
+                  description: The name of the snippet file
+                code:
+                  type: string
+                  description: The content of the snippet
+                visibility:
+                  type: string
+                  description: The visibility of the snippet (public, internal, or private)
+              required:
+              - title
+              - file_name
+              - code
+              - visibility
+      responses:
+        200:
+          description: Snippet updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Snippet'
+components:
+  schemas:
+    API_Entities_Snippet:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the snippet
+        title:
+          type: string
+          description: The title of the snippet
+        file_name:
+          type: string
+          description: The name of the snippet file
+        code:
+          type: string
+          description: The content of the snippet
+        visibility:
+          type: string
+          description: The visibility of the snippet (public, internal, or private)
+        author:
+          $ref: '#/components/schemas/API_Entities_User'
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the snippet was created
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time when the snippet was last updated
+    API_Entities_User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the user
+        username:
+          type: string
+          description: The username of the user
+        name:
+          type: string
+          description: The name of the user
+        state:
+          type: string
+          description: The state of the user (active, blocked, etc.)
+        avatar_url:
+          type: string
+          description: The URL of the user's avatar
+        web_url:
+          type: string
+          description: The URL of the user's GitLab profile

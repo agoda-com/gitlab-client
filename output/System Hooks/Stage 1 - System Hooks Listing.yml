@@ -1,0 +1,61 @@
+openapi: 3.0.0
+info:
+  title: GitLab System Hooks API
+  version: 1.0
+  description: API for managing GitLab system hooks
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/hooks:
+    get:
+      summary: Retrieves a list of all system hooks
+      description: This endpoint returns a list of all system hooks configured in the system.
+      operationId: getSystemHooks
+      tags:
+      - System Hooks
+      responses:
+        200:
+          description: An array of system hooks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_SystemHook'
+components:
+  schemas:
+    API_Entities_SystemHook:
+      type: object
+      required:
+      - id
+      - url
+      - created_at
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The unique identifier of the system hook
+        url:
+          type: string
+          format: uri
+          description: The URL that the hook will post to
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the hook was created
+        push_events:
+          type: boolean
+          description: Trigger hook on push events
+        tag_push_events:
+          type: boolean
+          description: Trigger hook on tag push events
+        merge_requests_events:
+          type: boolean
+          description: Trigger hook on merge requests events
+        repository_update_events:
+          type: boolean
+          description: Trigger hook on repository update events
+        enable_ssl_verification:
+          type: boolean
+          description: Enable SSL verification for the hook

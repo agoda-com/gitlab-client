@@ -1,0 +1,109 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing GitLab projects and deployments
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API endpoint
+paths:
+  /api/v4/projects/{id}/deployments/{deployment_id}:
+    put:
+      summary: Update an existing deployment
+      description: Updates a deployment for a project with the given ID and deployment ID.
+      operationId: updateDeployment
+      tags:
+      - Deployments
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: deployment_id
+        in: path
+        required: true
+        description: The ID of the deployment to update
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  description: The status of the deployment
+                  enum:
+                  - created
+                  - running
+                  - success
+                  - failed
+                  - canceled
+                environment:
+                  type: string
+                  description: The name of the environment to deploy to
+                sha:
+                  type: string
+                  description: The SHA of the commit to deploy
+                ref:
+                  type: string
+                  description: The reference to deploy
+                tag:
+                  type: boolean
+                  description: A flag indicating if the deployment is for a tag
+                description:
+                  type: string
+                  description: A description of the deployment
+              required:
+              - status
+      responses:
+        200:
+          description: Deployment successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Deployment'
+components:
+  schemas:
+    API_Entities_Deployment:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the deployment
+        iid:
+          type: integer
+          description: The internal ID of the deployment within the project
+        project_id:
+          type: integer
+          description: The ID of the project
+        status:
+          type: string
+          description: The status of the deployment
+        environment:
+          type: string
+          description: The name of the environment to deploy to
+        sha:
+          type: string
+          description: The SHA of the commit to deploy
+        ref:
+          type: string
+          description: The reference to deploy
+        tag:
+          type: boolean
+          description: A flag indicating if the deployment is for a tag
+        description:
+          type: string
+          description: A description of the deployment
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the deployment was created
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time when the deployment was last updated

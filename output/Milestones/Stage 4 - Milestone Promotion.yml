@@ -1,0 +1,82 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing milestones in GitLab projects
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API endpoint
+paths:
+  /api/v4/projects/{id}/milestones/{milestone_id}/promote:
+    post:
+      summary: Promote a project milestone to a group milestone
+      description: >
+        Promotes a project milestone to a group milestone. This operation is idempotent and can be performed only by users with Developer permissions or higher.
+      operationId: promoteProjectMilestone
+      tags:
+      - milestones
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: string
+      - name: milestone_id
+        in: path
+        description: The ID of the project milestone
+        required: true
+        schema:
+          type: integer
+      responses:
+        201:
+          description: Milestone promoted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Milestone'
+components:
+  schemas:
+    API_Entities_Milestone:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The ID of the milestone
+        iid:
+          type: integer
+          format: int64
+          description: The internal ID of the milestone within its scope
+        project_id:
+          type: integer
+          format: int64
+          description: The ID of the project
+        title:
+          type: string
+          description: The title of the milestone
+        description:
+          type: string
+          description: The description of the milestone
+        state:
+          type: string
+          description: The state of the milestone (active, closed)
+        due_date:
+          type: string
+          format: date
+          description: The due date of the milestone
+        start_date:
+          type: string
+          format: date
+          description: The start date of the milestone
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the milestone was created
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time when the milestone was last updated
+        web_url:
+          type: string
+          description: The web URL of the milestone

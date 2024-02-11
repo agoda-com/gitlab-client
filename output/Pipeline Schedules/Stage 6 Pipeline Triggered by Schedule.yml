@@ -1,0 +1,77 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for interacting with GitLab resources.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/pipeline_schedules/{pipeline_schedule_id}/pipelines:
+    get:
+      summary: Get pipelines triggered by a schedule
+      description: Retrieves pipelines that have been triggered by a specified pipeline schedule.
+      operationId: getPipelinesBySchedule
+      tags:
+      - pipelines
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: string
+      - name: pipeline_schedule_id
+        in: path
+        description: The ID of the pipeline schedule
+        required: true
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        description: Number of items to list per page
+        required: false
+        schema:
+          type: integer
+      - name: page
+        in: query
+        description: The page number to paginate through
+        required: false
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of pipelines
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_Pipeline'
+components:
+  schemas:
+    API_Entities_Pipeline:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The ID of the pipeline
+        status:
+          type: string
+          description: The status of the pipeline (e.g., running, failed, success)
+        ref:
+          type: string
+          description: The reference for the pipeline, such as a branch or tag
+        sha:
+          type: string
+          description: The SHA of the commit that triggered the pipeline
+        web_url:
+          type: string
+          description: The URL to the pipeline in the GitLab web interface
+      required:
+      - id
+      - status
+      - ref
+      - sha
+      - web_url

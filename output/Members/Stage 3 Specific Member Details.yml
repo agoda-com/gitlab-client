@@ -1,0 +1,139 @@
+openapi: 3.0.0
+info:
+  title: GitLab Specific Member Details API
+  version: 1.0
+  description: API endpoints to retrieve specific member details in groups and projects
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/groups/{id}/members/{user_id}:
+    get:
+      summary: Get a specific group member details
+      description: Retrieve details about a specific member of a group by the group ID and user ID.
+      operationId: getGroupMemberDetails
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the group
+        schema:
+          type: integer
+      - name: user_id
+        in: path
+        required: true
+        description: The ID of the user
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Successful response with member details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_MemberDetails'
+  /api/v4/projects/{id}/members/{user_id}:
+    get:
+      summary: Get a specific project member details
+      description: Retrieve details about a specific member of a project by the project ID and user ID.
+      operationId: getProjectMemberDetails
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: user_id
+        in: path
+        required: true
+        description: The ID of the user
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Successful response with member details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_MemberDetails'
+  /api/v4/groups/{id}/members/all/{user_id}:
+    get:
+      summary: Get all details of a specific group member
+      description: Retrieve all details about a specific member of a group, including inherited memberships from ancestors.
+      operationId: getAllGroupMemberDetails
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the group
+        schema:
+          type: integer
+      - name: user_id
+        in: path
+        required: true
+        description: The ID of the user
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Successful response with all member details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_MemberDetails'
+  /api/v4/projects/{id}/members/all/{user_id}:
+    get:
+      summary: Get all details of a specific project member
+      description: Retrieve all details about a specific member of a project, including inherited memberships from ancestors.
+      operationId: getAllProjectMemberDetails
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: user_id
+        in: path
+        required: true
+        description: The ID of the user
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Successful response with all member details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_MemberDetails'
+components:
+  schemas:
+    API_Entities_MemberDetails:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the user
+        username:
+          type: string
+          description: The username of the member
+        name:
+          type: string
+          description: The name of the member
+        state:
+          type: string
+          description: The state of the member within the group or project
+        avatar_url:
+          type: string
+          description: The URL of the member's avatar
+        web_url:
+          type: string
+          description: The web URL of the member's profile
+      required:
+      - id
+      - username
+      - name
+      - state
+      - avatar_url
+      - web_url

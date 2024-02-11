@@ -1,0 +1,128 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: '4.0'
+  description: API for interacting with GitLab repositories.
+servers:
+  - url: 'https://gitlab.example.com/api/v4'
+    description: GitLab API base URL
+
+paths:
+  /projects/{id}/repository/commits:
+    get:
+      summary: List Repository Commits
+      description: Get a list of repository commits in a project.
+      operationId: listRepositoryCommits
+      tags:
+        - commits
+      parameters:
+        - name: id
+          in: path
+          description: The ID or URL-encoded path of the project
+          required: true
+          schema:
+            type: string
+        - name: ref_name
+          in: query
+          description: The name of a repository branch or tag or if not given the default branch
+          required: false
+          schema:
+            type: string
+        - name: since
+          in: query
+          description: Only commits after or on this date will be returned (format: ISO 8601)
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: until
+          in: query
+          description: Only commits before or on this date will be returned (format: ISO 8601)
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: path
+          in: query
+          description: The file path
+          required: false
+          schema:
+            type: string
+        - name: all
+          in: query
+          description: Retrieve every commit from the repository
+          required: false
+          schema:
+            type: boolean
+        - name: with_stats
+          in: query
+          description: Include commit stats. Default is false
+          required: false
+          schema:
+            type: boolean
+        - name: first_parent
+          in: query
+          description: Follow only the first parent commit upon seeing a merge commit
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: An array of commit objects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Commit'
+        '400':
+          description: Bad request (e.g., invalid parameter)
+        '404':
+          description: Project not found
+
+components:
+  schemas:
+    Commit:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the commit
+        short_id:
+          type: string
+          description: The short ID of the commit
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the commit was created
+        parent_ids:
+          type: array
+          items:
+            type: string
+          description: The parent IDs of the commit
+        title:
+          type: string
+          description: The title of the commit
+        message:
+          type: string
+          description: The message of the commit
+        author_name:
+          type: string
+          description: The name of the author of the commit
+        author_email:
+          type: string
+          description: The email of the author of the commit
+        authored_date:
+          type: string
+          format: date-time
+          description: The date and time the commit was authored
+        committer_name:
+          type: string
+          description: The name of the committer of the commit
+        committer_email:
+          type: string
+          description: The email of the committer of the commit
+        committed_date:
+          type: string
+          format: date-time
+          description: The date and time the commit was committed

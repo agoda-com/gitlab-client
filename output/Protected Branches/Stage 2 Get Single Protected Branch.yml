@@ -1,0 +1,77 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: GitLab API for interacting with GitLab projects and repositories.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/protected_branches/{name}:
+    get:
+      summary: Get a single protected branch
+      description: Retrieve information about a single protected branch in a project.
+      operationId: getSingleProtectedBranch
+      tags:
+      - Protected Branches
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          type: string
+      - name: name
+        in: path
+        required: true
+        description: The name of the protected branch
+        schema:
+          type: string
+      responses:
+        200:
+          description: Protected branch information is returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_ProtectedBranch'
+components:
+  schemas:
+    API_Entities_ProtectedBranch:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The ID of the protected branch
+        name:
+          type: string
+          description: The name of the protected branch
+        push_access_levels:
+          type: array
+          items:
+            $ref: '#/components/schemas/API_Entities_AccessLevel'
+        merge_access_levels:
+          type: array
+          items:
+            $ref: '#/components/schemas/API_Entities_AccessLevel'
+        allow_force_push:
+          type: boolean
+          description: Indicates if force push is allowed for this protected branch
+        code_owner_approval_required:
+          type: boolean
+          description: Indicates if code owner approval is required for merging
+    API_Entities_AccessLevel:
+      type: object
+      properties:
+        access_level:
+          type: integer
+          description: The access level required to perform the action
+        access_level_description:
+          type: string
+          description: The description of the access level
+    API_Entities_Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: A message describing the error

@@ -1,0 +1,65 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: GitLab API for interacting with protected tags
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/protected_tags/{name}:
+    get:
+      summary: Fetches a single protected tag or wildcard protected tag details
+      description: >
+        Retrieves details for a specific protected tag or wildcard protected tag within a project.
+      operationId: getSingleProtectedTag
+      tags:
+      - Protected Tags
+      parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          type: string
+      - name: name
+        in: path
+        description: The name of the protected tag or wildcard
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Protected tag details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_ProtectedTag'
+components:
+  schemas:
+    API_Entities_ProtectedTag:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the protected tag
+        create_access_levels:
+          type: array
+          items:
+            $ref: '#/components/schemas/API_Entities_AccessLevel'
+          description: Access levels that are allowed to create this tag
+    API_Entities_AccessLevel:
+      type: object
+      properties:
+        access_level:
+          type: integer
+          description: The minimum access level required
+        access_level_description:
+          type: string
+          description: The description of the access level
+    API_Entities_ErrorMessage:
+      type: object
+      properties:
+        message:
+          type: string
+          description: A message describing the error

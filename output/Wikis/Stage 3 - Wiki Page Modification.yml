@@ -1,0 +1,70 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for interacting with GitLab resources.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API endpoint
+paths:
+  /api/v4/projects/{id}/wikis/{slug}:
+    put:
+      summary: Update an existing wiki page
+      description: Update an existing wiki page's content, title, or format.
+      operationId: updateWikiPage
+      tags:
+      - Wiki
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          type: string
+      - name: slug
+        in: path
+        required: true
+        description: The slug of the wiki page
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  description: The content of the wiki page
+                title:
+                  type: string
+                  description: The title of the wiki page
+                format:
+                  type: string
+                  description: The format of the wiki page (e.g., markdown, rdoc)
+              required:
+              - content
+              - title
+      responses:
+        200:
+          description: Wiki page updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_WikiPage'
+components:
+  schemas:
+    API_Entities_WikiPage:
+      type: object
+      properties:
+        content:
+          type: string
+        title:
+          type: string
+        format:
+          type: string
+      required:
+      - content
+      - title
+      - format

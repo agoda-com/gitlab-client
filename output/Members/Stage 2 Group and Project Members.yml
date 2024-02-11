@@ -1,0 +1,123 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing GitLab group and project members
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/groups/{id}/members:
+    get:
+      summary: Get group members
+      description: Retrieve the members of a group.
+      operationId: getGroupMembers
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the group
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of group members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_Member'
+  /api/v4/projects/{id}/members:
+    get:
+      summary: Get project members
+      description: Retrieve the members of a project.
+      operationId: getProjectMembers
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of project members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_Member'
+  /api/v4/groups/{id}/members/all:
+    get:
+      summary: Get all group members
+      description: Retrieve all members of a group, including inherited members from ancestor groups.
+      operationId: getAllGroupMembers
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the group
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of all group members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_Member'
+  /api/v4/projects/{id}/members/all:
+    get:
+      summary: Get all project members
+      description: Retrieve all members of a project, including inherited members from ancestor groups.
+      operationId: getAllProjectMembers
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of all project members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_Member'
+components:
+  schemas:
+    API_Entities_Member:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the member
+        username:
+          type: string
+          description: The username of the member
+        name:
+          type: string
+          description: The name of the member
+        state:
+          type: string
+          description: The state of the member
+        avatar_url:
+          type: string
+          description: The avatar URL of the member
+        web_url:
+          type: string
+          description: The web URL of the member
+        access_level:
+          type: integer
+          description: The access level of the member within the group or project
+        expires_at:
+          type: string
+          format: date-time
+          description: The expiration date for the member's access

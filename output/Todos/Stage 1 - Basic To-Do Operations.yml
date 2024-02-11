@@ -1,0 +1,72 @@
+openapi: 3.0.0
+info:
+  title: To-Do API
+  description: API for managing to-do items
+  version: 1.0.0
+servers:
+- url: https://api.yourdomain.com
+paths:
+  /api/v4/todos:
+    get:
+      summary: Retrieves a list of to-do items
+      description: Optional filters can be applied to refine the to-do items returned.
+      operationId: getTodos
+      parameters:
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - pending
+          - done
+        description: Filter by the status of the to-do item.
+      responses:
+        200:
+          description: A JSON array of to-do items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_ToDoItem'
+    post:
+      summary: Marks all pending to-do items as done
+      operationId: markAllTodosAsDone
+      responses:
+        200:
+          description: All pending to-do items have been marked as done
+  /api/v4/todos/{id}/mark_as_done:
+    post:
+      summary: Marks a single to-do item as done by its ID
+      operationId: markTodoAsDone
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        description: The ID of the to-do item to mark as done.
+      responses:
+        200:
+          description: To-do item has been marked as done
+components:
+  schemas:
+    API_Entities_ToDoItem:
+      type: object
+      required:
+      - id
+      - title
+      - status
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the to-do item
+        title:
+          type: string
+          description: Title of the to-do item
+        status:
+          type: string
+          enum:
+          - pending
+          - done
+          description: Status of the to-do item

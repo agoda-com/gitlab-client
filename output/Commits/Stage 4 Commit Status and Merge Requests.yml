@@ -1,0 +1,168 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: '4.0'
+servers:
+  - url: https://gitlab.example.com/api/v4
+paths:
+  /projects/{id}/repository/commits/{sha}/statuses:
+    get:
+      summary: Get the statuses of a commit
+      description: Get the statuses of a commit in a project.
+      operationId: getCommitStatuses
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the project
+          schema:
+            type: integer
+        - name: sha
+          in: path
+          required: true
+          description: The SHA of the commit
+          schema:
+            type: string
+      responses:
+        '200':
+          description: An array of commit statuses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CommitStatus'
+        '404':
+          description: Project or commit not found
+
+  /projects/{id}/statuses/{sha}:
+    post:
+      summary: Post the status to a commit
+      description: Create a status for a commit.
+      operationId: postCommitStatus
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the project
+          schema:
+            type: integer
+        - name: sha
+          in: path
+          required: true
+          description: The SHA of the commit
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommitStatusCreate'
+      responses:
+        '201':
+          description: Commit status created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommitStatus'
+        '400':
+          description: Invalid input
+        '404':
+          description: Project or commit not found
+
+  /projects/{id}/repository/commits/{sha}/merge_requests:
+    get:
+      summary: Get merge requests associated with a commit
+      description: Get all merge requests associated with a commit.
+      operationId: getCommitMergeRequests
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the project
+          schema:
+            type: integer
+        - name: sha
+          in: path
+          required: true
+          description: The SHA of the commit
+          schema:
+            type: string
+      responses:
+        '200':
+          description: An array of merge requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MergeRequest'
+        '404':
+          description: Project or commit not found
+
+components:
+  schemas:
+    CommitStatus:
+      type: object
+      properties:
+        id:
+          type: integer
+        sha:
+          type: string
+        status:
+          type: string
+        name:
+          type: string
+        target_url:
+          type: string
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        started_at:
+          type: string
+          format: date-time
+        finished_at:
+          type: string
+          format: date-time
+        allow_failure:
+          type: boolean
+    CommitStatusCreate:
+      type: object
+      properties:
+        state:
+          type: string
+          description: The state of the status. Can be: pending, running, success, failed, canceled
+        target_url:
+          type: string
+          description: The target URL to associate with this status.
+        description:
+          type: string
+          description: A short description of the status.
+        context:
+          type: string
+          description: A string label to differentiate this status from the status of other systems.
+    MergeRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+        iid:
+          type: integer
+        project_id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        state:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        # Define other properties as needed

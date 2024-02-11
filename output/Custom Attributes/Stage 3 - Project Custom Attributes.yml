@@ -1,0 +1,120 @@
+openapi: 3.0.0
+info:
+  title: GitLab API - Project Custom Attributes
+  version: 1.0
+  description: API endpoints for managing project custom attributes in GitLab.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/custom_attributes:
+    get:
+      summary: Get all custom attributes of a project
+      description: Returns a list of all custom attributes for a given project.
+      operationId: getProjectCustomAttributes
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of custom attributes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_CustomAttribute'
+  /api/v4/projects/{id}/custom_attributes/{key}:
+    get:
+      summary: Get a single custom attribute of a project
+      description: Returns a single custom attribute for a given project by key.
+      operationId: getProjectCustomAttribute
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+      - name: key
+        in: path
+        description: The key of the custom attribute
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: A custom attribute object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_CustomAttribute'
+    put:
+      summary: Update a custom attribute of a project
+      description: Updates the value of a custom attribute for a given project.
+      operationId: updateProjectCustomAttribute
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+      - name: key
+        in: path
+        description: The key of the custom attribute
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: string
+      responses:
+        200:
+          description: Custom attribute updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_CustomAttribute'
+    delete:
+      summary: Delete a custom attribute of a project
+      description: Deletes a custom attribute from a given project.
+      operationId: deleteProjectCustomAttribute
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+      - name: key
+        in: path
+        description: The key of the custom attribute
+        required: true
+        schema:
+          type: string
+      responses:
+        204:
+          description: Custom attribute deleted
+components:
+  schemas:
+    API_Entities_CustomAttribute:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+      required:
+      - key
+      - value

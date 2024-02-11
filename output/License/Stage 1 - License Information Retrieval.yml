@@ -1,0 +1,86 @@
+openapi: 3.0.0
+info:
+  title: License Information API
+  version: 1.0.0
+  description: API for retrieving license information
+servers:
+- url: https://api.yourdomain.com/v1
+  description: Production server
+paths:
+  /api/v4/license:
+    get:
+      summary: Retrieve a list of all licenses
+      operationId: listLicenses
+      tags:
+      - Licenses
+      responses:
+        200:
+          description: An array of licenses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_License'
+  /api/v4/licenses:
+    get:
+      summary: Retrieve a list of all licenses (alternative endpoint)
+      operationId: listAllLicenses
+      tags:
+      - Licenses
+      responses:
+        200:
+          description: An array of licenses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_License'
+  /api/v4/license/{id}:
+    get:
+      summary: Retrieve a specific license by ID
+      operationId: getLicenseById
+      tags:
+      - Licenses
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Unique identifier of the license
+        schema:
+          type: string
+      responses:
+        200:
+          description: A single license object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_License'
+components:
+  schemas:
+    API_Entities_License:
+      type: object
+      required:
+      - id
+      - name
+      - issuedDate
+      - expiryDate
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the license
+        name:
+          type: string
+          description: Name of the license
+        issuedDate:
+          type: string
+          format: date
+          description: Date when the license was issued
+        expiryDate:
+          type: string
+          format: date
+          description: Date when the license expires
+        terms:
+          type: string
+          description: Terms and conditions of the license

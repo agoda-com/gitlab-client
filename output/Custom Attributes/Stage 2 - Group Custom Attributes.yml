@@ -1,0 +1,111 @@
+openapi: 3.0.0
+info:
+  title: GitLab Group Custom Attributes API
+  version: 1.0
+servers:
+- url: https://gitlab.example.com/api/v4
+paths:
+  /api/v4/groups/{id}/custom_attributes:
+    get:
+      summary: Get all custom attributes for a group
+      description: Returns a list of all custom attributes for the given group.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the group
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of custom attributes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_CustomAttribute'
+  /api/v4/groups/{id}/custom_attributes/{key}:
+    get:
+      summary: Get a single custom attribute for a group
+      description: Returns a single custom attribute for the given group.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the group
+        schema:
+          type: integer
+      - name: key
+        in: path
+        required: true
+        description: The key of the custom attribute
+        schema:
+          type: string
+      responses:
+        200:
+          description: A custom attribute object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_CustomAttribute'
+    put:
+      summary: Update a custom attribute for a group
+      description: Updates the value of a custom attribute for the given group.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the group
+        schema:
+          type: integer
+      - name: key
+        in: path
+        required: true
+        description: The key of the custom attribute
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: string
+      responses:
+        200:
+          description: The custom attribute was updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_CustomAttribute'
+    delete:
+      summary: Delete a custom attribute from a group
+      description: Deletes a custom attribute from the given group.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the group
+        schema:
+          type: integer
+      - name: key
+        in: path
+        required: true
+        description: The key of the custom attribute
+        schema:
+          type: string
+      responses:
+        204:
+          description: The custom attribute was deleted successfully
+components:
+  schemas:
+    API_Entities_CustomAttribute:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string

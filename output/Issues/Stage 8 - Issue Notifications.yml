@@ -1,0 +1,66 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing GitLab resources including Issue Notifications
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/issues/{issue_iid}/subscribe:
+    post:
+      summary: Subscribe to an issue
+      description: Subscribes the authenticated user to receive notifications for an issue.
+      operationId: subscribeToIssue
+      tags:
+      - issues
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          type: integer
+      - name: issue_iid
+        in: path
+        required: true
+        description: The internal ID of the project's issue
+        schema:
+          type: integer
+      responses:
+        201:
+          description: Subscription successful
+  /api/v4/projects/{id}/issues/{issue_iid}/unsubscribe:
+    post:
+      summary: Unsubscribe from an issue
+      description: Unsubscribes the authenticated user from receiving notifications for an issue.
+      operationId: unsubscribeFromIssue
+      tags:
+      - issues
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          type: integer
+      - name: issue_iid
+        in: path
+        required: true
+        description: The internal ID of the project's issue
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Unsubscription successful
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://gitlab.example.com/oauth/authorize
+          tokenUrl: https://gitlab.example.com/oauth/token
+          scopes: {}
+security:
+- OAuth2: []

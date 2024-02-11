@@ -1,0 +1,203 @@
+openapi: 3.0.0
+info:
+  title: GitLab Merge Request Notes API
+  version: 1.0
+servers:
+- url: https://gitlab.example.com/api/v4
+paths:
+  /api/v4/projects/{id}/merge_requests/{merge_request_iid}/notes:
+    get:
+      summary: Get a list of all notes for a merge request
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the project
+      - name: merge_request_iid
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The internal ID of the merge request
+      responses:
+        200:
+          description: An array of notes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_Note'
+    post:
+      summary: Create a new note for a merge request
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the project
+      - name: merge_request_iid
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The internal ID of the merge request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_NoteCreate'
+      responses:
+        201:
+          description: The note was successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Note'
+  /api/v4/projects/{id}/merge_requests/{merge_request_iid}/notes/{note_id}:
+    get:
+      summary: Get a single note for a merge request
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the project
+      - name: merge_request_iid
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The internal ID of the merge request
+      - name: note_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the note
+      responses:
+        200:
+          description: A single note
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Note'
+    put:
+      summary: Update an existing note for a merge request
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the project
+      - name: merge_request_iid
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The internal ID of the merge request
+      - name: note_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the note
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_NoteUpdate'
+      responses:
+        200:
+          description: The note was successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_Note'
+    delete:
+      summary: Delete a note for a merge request
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the project
+      - name: merge_request_iid
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The internal ID of the merge request
+      - name: note_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the note
+      responses:
+        204:
+          description: The note was successfully deleted
+components:
+  schemas:
+    API_Entities_Note:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the note
+        body:
+          type: string
+          description: The content of the note
+        author:
+          $ref: '#/components/schemas/API_Entities_User'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    API_Entities_NoteCreate:
+      type: object
+      required:
+      - body
+      properties:
+        body:
+          type: string
+          description: The content of the note to be created
+    API_Entities_NoteUpdate:
+      type: object
+      required:
+      - body
+      properties:
+        body:
+          type: string
+          description: The updated content of the note
+    API_Entities_User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the user
+        name:
+          type: string
+          description: The name of the user
+        username:
+          type: string
+          description: The username of the user
+        state:
+          type: string
+          description: The state of the user
+        avatar_url:
+          type: string
+          description: The avatar URL of the user
+        web_url:
+          type: string
+          description: The web URL of the user profile

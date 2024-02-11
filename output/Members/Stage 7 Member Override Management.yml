@@ -1,0 +1,71 @@
+openapi: 3.0.0
+info:
+  title: Member Override Management API
+  version: 1.0.0
+  description: API for managing member overrides in groups
+servers:
+- url: https://api.yourdomain.com
+paths:
+  /api/v4/groups/{id}/members/{user_id}/override:
+    post:
+      summary: Create a member override
+      description: Adds an override for a specific member in a group.
+      operationId: createMemberOverride
+      tags:
+      - Member Override
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the group
+        required: true
+        schema:
+          type: integer
+      - name: user_id
+        in: path
+        description: The ID of the user
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Optional details for the member override
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  description: Reason for the override
+      responses:
+        201:
+          description: Override created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    delete:
+      summary: Delete a member override
+      description: Removes an override for a specific member in a group.
+      operationId: deleteMemberOverride
+      tags:
+      - Member Override
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the group
+        required: true
+        schema:
+          type: integer
+      - name: user_id
+        in: path
+        description: The ID of the user
+        required: true
+        schema:
+          type: integer
+      responses:
+        204:
+          description: Override deleted successfully

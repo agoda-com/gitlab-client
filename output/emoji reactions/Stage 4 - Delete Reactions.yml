@@ -1,0 +1,50 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing GitLab resources including deleting reactions (award emojis).
+servers:
+- url: https://gitlab.example.com/api/v4
+paths:
+  /api/v4/projects/{id}/issues/{issue_iid}/award_emoji/{award_id}:
+    delete:
+      summary: Delete an award emoji from an issue
+      tags:
+      - issues
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: issue_iid
+        in: path
+        required: true
+        description: The internal ID of the issue
+        schema:
+          type: integer
+      - name: award_id
+        in: path
+        required: true
+        description: The ID of the award emoji to delete
+        schema:
+          type: integer
+      responses:
+        204:
+          description: Award emoji deleted successfully
+  /api/v4/projects/{id}/merge_requests/{merge_request_iid}/award_emoji/{award_id}:
+    delete:
+      summary: Delete an award emoji from a merge request
+      tags:
+      - merge_requests
+  /api/v4/projects/{id}/snippets/{snippet_id}/award_emoji/{award_id}:
+    delete:
+      summary: Delete an award emoji from a snippet
+      tags:
+      - snippets
+  /api/v4/projects/{id}/issues/{issue_iid}/notes/{note_id}/award_emoji/{award_id}:
+    delete:
+      summary: Delete an award emoji from a note on an issue
+      tags:
+      - issue_notes

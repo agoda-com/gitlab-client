@@ -1,0 +1,124 @@
+openapi: 3.0.0
+info:
+  title: GitLab Access Tokens API
+  version: 1.0
+  description: API for managing GitLab project access tokens
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API base URL
+paths:
+  /api/v4/projects/{id}/access_tokens:
+    get:
+      summary: List all access tokens for a project
+      description: Get a list of all access tokens for a given project.
+      operationId: listProjectAccessTokens
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      responses:
+        200:
+          description: An array of access tokens
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/API_Entities_AccessToken'
+    post:
+      summary: Create an access token for a project
+      description: Create a new access token for the specified project.
+      operationId: createProjectAccessToken
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/API_Entities_NewAccessToken'
+      responses:
+        201:
+          description: Access token created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_AccessToken'
+  /api/v4/projects/{id}/access_tokens/{token_id}:
+    get:
+      summary: Get a specific access token for a project
+      description: Retrieve a specific access token for the given project by token ID.
+      operationId: getProjectAccessToken
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the project
+        schema:
+          type: integer
+      - name: token_id
+        in: path
+        required: true
+        description: The ID of the access token
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Access token details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API_Entities_AccessToken'
+components:
+  schemas:
+    API_Entities_AccessToken:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the access token
+        name:
+          type: string
+          description: The name of the access token
+        scopes:
+          type: array
+          items:
+            type: string
+          description: The scopes assigned to the access token
+        created_at:
+          type: string
+          format: date-time
+          description: The creation date of the access token
+        expires_at:
+          type: string
+          format: date-time
+          description: The expiration date of the access token
+        active:
+          type: boolean
+          description: Whether the access token is active or not
+    API_Entities_NewAccessToken:
+      type: object
+      required:
+      - name
+      - scopes
+      properties:
+        name:
+          type: string
+          description: The name of the access token
+        scopes:
+          type: array
+          items:
+            type: string
+          description: The scopes for the access token
+        expires_at:
+          type: string
+          format: date-time
+          description: The expiration date for the access token

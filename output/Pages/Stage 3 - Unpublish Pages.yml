@@ -1,0 +1,30 @@
+openapi: 3.0.0
+info:
+  title: GitLab API
+  version: 4.0
+  description: API for managing GitLab resources including repository files, commits, and project pages.
+servers:
+- url: https://gitlab.example.com/api/v4
+  description: GitLab API endpoint
+paths:
+  /api/v4/projects/{id}/pages:
+    delete:
+      summary: Unpublish Project Pages
+      description: Remove a project's pages from publication, effectively unpublishing the content.
+      operationId: unpublishProjectPages
+      tags:
+      - pages
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the project
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        204:
+          description: No Content - Pages successfully unpublished.
+      security:
+      - oauth2:
+        - write_pages
